@@ -1,0 +1,122 @@
+[
+  {
+    "req_id": "REQ-01",
+    "category": "OUTPUT_FORMAT",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Output file matching_results.tsv is required; candidate_pairs.tsv is required for final submission.",
+    "official_source": "README.md lines 10-18, 143-160",
+    "validation_logic": "os.path.isfile(matching_path) and os.path.isfile(candidate_path)"
+  },
+  {
+    "req_id": "REQ-02",
+    "category": "OUTPUT_FORMAT",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Files must be strictly Tab-Separated (.tsv) and valid UTF-8 text.",
+    "official_source": "README.md lines 116-121, 323-328",
+    "validation_logic": "Check encoding utf-8 and presence of '\\t' delimiter without raw comma delimitation."
+  },
+  {
+    "req_id": "REQ-03",
+    "category": "OUTPUT_FORMAT",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Header rows must match exact expected column names: source1_entity_id\\tmatched_entity_ids and source1_entity_id\\tcandidate_entity_ids.",
+    "official_source": "README.md lines 48-49, 123-129",
+    "validation_logic": "First line must equal exact tab-separated list."
+  },
+  {
+    "req_id": "REQ-04",
+    "category": "INTEGRITY",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Every Source 1 entity in test_source1.tsv must appear in submission outputs exactly once.",
+    "official_source": "README.md lines 191-198",
+    "validation_logic": "set(seen_s1_ids) == set(required_test_s1_ids)"
+  },
+  {
+    "req_id": "REQ-05",
+    "category": "INTEGRITY",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Duplicate source1_entity_id rows are strictly forbidden.",
+    "official_source": "README.md lines 166-170",
+    "validation_logic": "len(seen_s1_ids) == len(unique_s1_ids)"
+  },
+  {
+    "req_id": "REQ-06",
+    "category": "OUTPUT_FORMAT",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Matched and candidate IDs must only have S2- or S3- prefixes.",
+    "official_source": "README.md lines 182-185",
+    "validation_logic": "all(id.startswith(('S2-', 'S3-')) for id in list)"
+  },
+  {
+    "req_id": "REQ-07",
+    "category": "INTEGRITY",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Self-matches (S1- IDs in matched or candidate lists) are strictly forbidden.",
+    "official_source": "README.md lines 177-180",
+    "validation_logic": "not any(id.startswith('S1-') for id in list)"
+  },
+  {
+    "req_id": "REQ-08",
+    "category": "OUTPUT_FORMAT",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Repeated entity IDs inside a single matched or candidate list are forbidden.",
+    "official_source": "README.md lines 172-175",
+    "validation_logic": "len(ids) == len(set(ids))"
+  },
+  {
+    "req_id": "REQ-09",
+    "category": "OUTPUT_FORMAT",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Singletons / empty predictions must be an empty string following tab, never 'nan', 'null', 'None'.",
+    "official_source": "README.md lines 147-150",
+    "validation_logic": "rest.strip() != 'nan' and rest.strip() != 'null'"
+  },
+  {
+    "req_id": "REQ-10",
+    "category": "INTEGRITY",
+    "enforcement": "DIAGNOSTIC_AUDIT",
+    "rule_statement": "Final matches must be a subset of candidate blocking pairs for each Source 1 entity.",
+    "official_source": "README.md lines 258-270",
+    "validation_logic": "matched_ids.issubset(candidate_ids)"
+  },
+  {
+    "req_id": "REQ-11",
+    "category": "INTEGRITY",
+    "enforcement": "DIAGNOSTIC_AUDIT",
+    "rule_statement": "Matched entity IDs should exist in test_source2.tsv or test_source3.tsv.",
+    "official_source": "README.md lines 30-39, 186-189",
+    "validation_logic": "matched_id in (test_s2_ids | test_s3_ids)"
+  },
+  {
+    "req_id": "REQ-12",
+    "category": "METRIC",
+    "enforcement": "AUTOMATED_GATE",
+    "rule_statement": "Evaluation metric is Macro-averaged F_0.5 with explicit singleton credit (1.0 for true empty & pred empty, 0.0 for true empty & pred non-empty).",
+    "official_source": "README.md lines 180-210",
+    "validation_logic": "compute_macro_f05() implementation"
+  },
+  {
+    "req_id": "REQ-13",
+    "category": "MODEL_LICENSE",
+    "enforcement": "CODE_AUDIT",
+    "rule_statement": "Model parameter count must not exceed 8 Billion parameters.",
+    "official_source": "README.md lines 175-178",
+    "validation_logic": "Audit model parameter size <= 8,000,000,000"
+  },
+  {
+    "req_id": "REQ-14",
+    "category": "MODEL_LICENSE",
+    "enforcement": "CODE_AUDIT",
+    "rule_statement": "Pretrained models must be licensed under MIT or Apache 2.0.",
+    "official_source": "README.md lines 175-178",
+    "validation_logic": "Verify model license in ['MIT', 'Apache-2.0']"
+  },
+  {
+    "req_id": "REQ-15",
+    "category": "FAIR_PLAY",
+    "enforcement": "CODE_AUDIT",
+    "rule_statement": "Zero external business databases, entity resolution APIs, government registries, or geocoding APIs allowed.",
+    "official_source": "README.md lines 230-245",
+    "validation_logic": "Audit code for zero outbound network calls and zero external lookup artifacts"
+  }
+]

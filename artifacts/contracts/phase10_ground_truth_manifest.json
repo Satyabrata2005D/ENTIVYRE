@@ -1,0 +1,19 @@
+{
+  "phase": "10_ground_truth",
+  "status": "COMPLETED",
+  "engine_module": "ber.labels.ground_truth",
+  "classes": [
+    "GroundTruthStore",
+    "GroundTruthStats"
+  ],
+  "tests_passed": 70,
+  "features_verified": [
+    "forward_indexing (anchor_id -> target_ids)",
+    "reverse_indexing (target_id -> anchor_id)",
+    "singleton_isolation (is_singleton, empty target handling)",
+    "multi_match_tracking (max_targets, mean_targets, source breakdown)",
+    "pairwise_label_computation (binary 1/0 for supervised learning)",
+    "candidate_recall_audit (found_count, true_count, recall_rate)",
+    "streaming_tsv_loader (memory-bounded chunked ingestion)"
+  ]
+}

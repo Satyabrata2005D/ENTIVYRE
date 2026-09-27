@@ -1,0 +1,16 @@
+# ENTIVYRE Validation Configuration
+# Overrides base.yaml for training and validation benchmarking
+
+mode: "validation"
+split:
+  train_ratio: 0.80
+  val_ratio: 0.20
+  stratify_by_country: true
+  prevent_entity_leakage: true
+  split_seed: 42
+
+evaluation:
+  compute_per_country_metrics: true
+  generate_diagnostic_reports: true
+  error_analysis_top_k: 100
+  optimize_f05_threshold: true

@@ -1,0 +1,8 @@
+error_category,count,estimated_F0.5_impact,difficulty_to_fix,expected_gain,risk,priority
+SHORT_ACRONYM_ERASURE_FP,106,+0.045,LOW,High precision boost by preserving 2-letter distinctive acronyms (RJ vs IJ vs CW) instead of dropping len < 3,LOW,P0
+DOMAIN_URL_ERASURE_FN,412028,+0.038,LOW,"Recovers over 319,000 domain targets by stripping only TLD (.com, .org) and segmenting domain roots instead of erasing entire name to empty string",LOW,P0
+HARSH_ADDRESS_PENALTY_FN,1759,+0.032,LOW,"If building numbers match exactly, don't penalize score from 0.85 to 0.34 just because city/district formatting differs",LOW,P1
+OCR_TRUNCATION_BUILDING_NUM_VETO_FN,740,+0.024,MEDIUM,"Allow building number match when one is prefix of other with length diff <= 1 (e.g. 9327 vs 932, 459 vs 45)",MEDIUM,P1
+INDIC_SCRIPT_PREFIX_BLOCKING_MISS,6275,+0.028,MEDIUM,"Strip leading honorifics (Sri, Shri, M/s, Dr) to align token 0 and add address-token blocking keys to recover Indian true matches",MEDIUM,P1
+FRENCH_UNSEEN_TYPOGRAPHY_SHIFT,259452,+0.020,LOW,"Add French street thoroughfare abbreviations (bd, av, imp, all) and 5-digit postal code alignment for France (15% of test)",LOW,P2
+IDENTICAL_NAME_DIFFERENT_ADDR_FP,14,+0.015,MEDIUM,Veto or severely downweight when both addresses are long (>30 chars) and share 0 street/city tokens,MEDIUM,P2

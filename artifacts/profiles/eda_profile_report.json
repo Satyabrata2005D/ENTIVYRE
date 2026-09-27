@@ -1,0 +1,399 @@
+{
+  "timestamp_utc": "2026-09-25T12:51:06Z",
+  "sample_limit": 50000,
+  "elapsed_seconds": 2.78,
+  "profiles": {
+    "train_source1": {
+      "file_key": "train_source1",
+      "total_records": 50000,
+      "name_stats": {
+        "count": 50000,
+        "min_char_len": 3,
+        "max_char_len": 71,
+        "mean_char_len": 24.07,
+        "min_token_len": 1,
+        "max_token_len": 12,
+        "mean_token_len": 3.55,
+        "has_digits_count": 808,
+        "has_devanagari_count": 0,
+        "has_tamil_count": 0,
+        "has_urls_count": 0
+      },
+      "address_stats": {
+        "count": 50000,
+        "min_char_len": 16,
+        "max_char_len": 201,
+        "mean_char_len": 52.03,
+        "min_token_len": 3,
+        "max_token_len": 34,
+        "mean_token_len": 8.03,
+        "has_digits_count": 48276,
+        "has_devanagari_count": 0,
+        "has_tamil_count": 0,
+        "has_urls_count": 3
+      },
+      "missing_address_count": 0,
+      "missing_address_pct": 0.0,
+      "country_counts": {
+        "US": 29965,
+        "India": 20035
+      },
+      "top_legal_suffixes": {
+        "limited": 11921,
+        "private limited": 9876,
+        "llc": 8525,
+        "co": 7298,
+        "inc": 5589,
+        "ltd": 3366,
+        "pvt ltd": 2152,
+        "sa": 2066,
+        "corp": 1192,
+        "nv": 713
+      },
+      "top_address_keywords": {
+        "st": 18181,
+        "road": 10848,
+        "street": 7003,
+        "dr": 6398,
+        "ave": 5428,
+        "drive": 4974,
+        "rd": 4660,
+        "pl": 4606,
+        "nagar": 4371,
+        "avenue": 4359
+      }
+    },
+    "train_source2": {
+      "file_key": "train_source2",
+      "total_records": 50000,
+      "name_stats": {
+        "count": 50000,
+        "min_char_len": 2,
+        "max_char_len": 104,
+        "mean_char_len": 25.03,
+        "min_token_len": 1,
+        "max_token_len": 15,
+        "mean_token_len": 3.49,
+        "has_digits_count": 2611,
+        "has_devanagari_count": 2566,
+        "has_tamil_count": 304,
+        "has_urls_count": 1956
+      },
+      "address_stats": {
+        "count": 48318,
+        "min_char_len": 12,
+        "max_char_len": 176,
+        "mean_char_len": 47.74,
+        "min_token_len": 2,
+        "max_token_len": 29,
+        "mean_token_len": 7.52,
+        "has_digits_count": 45306,
+        "has_devanagari_count": 2694,
+        "has_tamil_count": 340,
+        "has_urls_count": 0
+      },
+      "missing_address_count": 1682,
+      "missing_address_pct": 3.364,
+      "country_counts": {
+        "India": 19903,
+        "US": 30097
+      },
+      "top_legal_suffixes": {
+        "co": 10221,
+        "llc": 5472,
+        "limited": 5280,
+        "inc": 4281,
+        "ltd": 3904,
+        "corp": 2407,
+        "private limited": 2023,
+        "sa": 1938,
+        "pvt ltd": 772,
+        "corporation": 649
+      },
+      "top_address_keywords": {
+        "st": 15792,
+        "road": 6723,
+        "rd": 6677,
+        "dr": 6067,
+        "ave": 5178,
+        "pl": 4117,
+        "nagar": 3511,
+        "street": 3413,
+        "floor": 3212,
+        "ct": 2721
+      }
+    },
+    "train_source3": {
+      "file_key": "train_source3",
+      "total_records": 50000,
+      "name_stats": {
+        "count": 50000,
+        "min_char_len": 2,
+        "max_char_len": 80,
+        "mean_char_len": 25.21,
+        "min_token_len": 1,
+        "max_token_len": 13,
+        "mean_token_len": 3.52,
+        "has_digits_count": 2569,
+        "has_devanagari_count": 1516,
+        "has_tamil_count": 199,
+        "has_urls_count": 1989
+      },
+      "address_stats": {
+        "count": 48260,
+        "min_char_len": 6,
+        "max_char_len": 198,
+        "mean_char_len": 48.49,
+        "min_token_len": 2,
+        "max_token_len": 31,
+        "mean_token_len": 7.44,
+        "has_digits_count": 45246,
+        "has_devanagari_count": 2638,
+        "has_tamil_count": 310,
+        "has_urls_count": 4
+      },
+      "missing_address_count": 1740,
+      "missing_address_pct": 3.48,
+      "country_counts": {
+        "US": 29790,
+        "India": 20210
+      },
+      "top_legal_suffixes": {
+        "co": 9993,
+        "limited": 6485,
+        "llc": 5608,
+        "inc": 4258,
+        "ltd": 4094,
+        "private limited": 2736,
+        "corp": 2141,
+        "sa": 1887,
+        "pvt ltd": 912,
+        "enterprise": 585
+      },
+      "top_address_keywords": {
+        "st": 14565,
+        "rd": 6479,
+        "road": 6145,
+        "dr": 5907,
+        "ave": 4871,
+        "pl": 3774,
+        "nagar": 3307,
+        "street": 3299,
+        "floor": 2715,
+        "ct": 2581
+      }
+    },
+    "test_source1": {
+      "file_key": "test_source1",
+      "total_records": 50000,
+      "name_stats": {
+        "count": 50000,
+        "min_char_len": 3,
+        "max_char_len": 75,
+        "mean_char_len": 23.83,
+        "min_token_len": 1,
+        "max_token_len": 11,
+        "mean_token_len": 3.52,
+        "has_digits_count": 572,
+        "has_devanagari_count": 0,
+        "has_tamil_count": 0,
+        "has_urls_count": 0
+      },
+      "address_stats": {
+        "count": 50000,
+        "min_char_len": 15,
+        "max_char_len": 216,
+        "mean_char_len": 57.01,
+        "min_token_len": 2,
+        "max_token_len": 32,
+        "mean_token_len": 8.56,
+        "has_digits_count": 47937,
+        "has_devanagari_count": 0,
+        "has_tamil_count": 0,
+        "has_urls_count": 2
+      },
+      "missing_address_count": 0,
+      "missing_address_pct": 0.0,
+      "country_counts": {
+        "US": 19215,
+        "France": 7485,
+        "India": 23300
+      },
+      "top_legal_suffixes": {
+        "limited": 13716,
+        "private limited": 11395,
+        "co": 7879,
+        "sa": 6424,
+        "llc": 5412,
+        "ltd": 3921,
+        "inc": 3554,
+        "pvt ltd": 2505,
+        "sarl": 2085,
+        "corp": 956
+      },
+      "top_address_keywords": {
+        "st": 16488,
+        "road": 9612,
+        "rd": 5945,
+        "nagar": 5161,
+        "street": 4971,
+        "rue": 4932,
+        "pl": 4920,
+        "ave": 4779,
+        "dr": 4741,
+        "floor": 4341
+      }
+    },
+    "test_source2": {
+      "file_key": "test_source2",
+      "total_records": 50000,
+      "name_stats": {
+        "count": 50000,
+        "min_char_len": 2,
+        "max_char_len": 74,
+        "mean_char_len": 25.71,
+        "min_token_len": 1,
+        "max_token_len": 11,
+        "mean_token_len": 3.59,
+        "has_digits_count": 1853,
+        "has_devanagari_count": 3209,
+        "has_tamil_count": 401,
+        "has_urls_count": 1503
+      },
+      "address_stats": {
+        "count": 48669,
+        "min_char_len": 5,
+        "max_char_len": 211,
+        "mean_char_len": 51.61,
+        "min_token_len": 1,
+        "max_token_len": 34,
+        "mean_token_len": 7.98,
+        "has_digits_count": 46372,
+        "has_devanagari_count": 3322,
+        "has_tamil_count": 403,
+        "has_urls_count": 0
+      },
+      "missing_address_count": 1331,
+      "missing_address_pct": 2.662,
+      "country_counts": {
+        "India": 23534,
+        "France": 7228,
+        "US": 19238
+      },
+      "top_legal_suffixes": {
+        "co": 9732,
+        "limited": 6372,
+        "sa": 5126,
+        "ltd": 4358,
+        "llc": 3409,
+        "inc": 2812,
+        "private limited": 2441,
+        "corp": 1984,
+        "sarl": 1473,
+        "pvt ltd": 943
+      },
+      "top_address_keywords": {
+        "st": 14094,
+        "rd": 7800,
+        "road": 6859,
+        "dr": 4576,
+        "pl": 4473,
+        "nagar": 4347,
+        "ave": 4207,
+        "floor": 3896,
+        "rue": 2778,
+        "street": 2566
+      }
+    },
+    "test_source3": {
+      "file_key": "test_source3",
+      "total_records": 50000,
+      "name_stats": {
+        "count": 50000,
+        "min_char_len": 2,
+        "max_char_len": 78,
+        "mean_char_len": 25.74,
+        "min_token_len": 1,
+        "max_token_len": 11,
+        "mean_token_len": 3.61,
+        "has_digits_count": 2071,
+        "has_devanagari_count": 1751,
+        "has_tamil_count": 218,
+        "has_urls_count": 1566
+      },
+      "address_stats": {
+        "count": 48620,
+        "min_char_len": 5,
+        "max_char_len": 213,
+        "mean_char_len": 50.07,
+        "min_token_len": 1,
+        "max_token_len": 36,
+        "mean_token_len": 7.71,
+        "has_digits_count": 46091,
+        "has_devanagari_count": 3079,
+        "has_tamil_count": 410,
+        "has_urls_count": 2
+      },
+      "missing_address_count": 1380,
+      "missing_address_pct": 2.76,
+      "country_counts": {
+        "India": 23690,
+        "France": 7061,
+        "US": 19249
+      },
+      "top_legal_suffixes": {
+        "co": 9730,
+        "limited": 7942,
+        "sa": 5148,
+        "ltd": 4485,
+        "llc": 3490,
+        "private limited": 3413,
+        "inc": 2868,
+        "corp": 1805,
+        "sarl": 1485,
+        "pvt ltd": 1133
+      },
+      "top_address_keywords": {
+        "st": 12784,
+        "rd": 7312,
+        "road": 5804,
+        "dr": 4494,
+        "pl": 4072,
+        "ave": 4004,
+        "nagar": 3770,
+        "floor": 3099,
+        "rue": 2810,
+        "street": 2497
+      }
+    },
+    "train_ground_truth": {
+      "total_s1_anchors": 50000,
+      "total_matches": 172731,
+      "singleton_count": 2820,
+      "singleton_pct": 5.64,
+      "single_match_count": 2647,
+      "single_match_pct": 5.294,
+      "multi_match_count": 44533,
+      "multi_match_pct": 89.066,
+      "max_matches_per_s1": 11,
+      "mean_matches_per_s1": 3.455,
+      "multiplicity_histogram": {
+        "0": 2820,
+        "1": 2647,
+        "2": 8442,
+        "3": 12154,
+        "4": 11066,
+        "5": 7288,
+        "6": 3671,
+        "7": 1410,
+        "8": 397,
+        "9": 91,
+        "10": 11,
+        "11": 3
+      },
+      "s2_matches_count": 3240,
+      "s3_matches_count": 3600,
+      "both_s2_s3_count": 40340
+    }
+  }
+}

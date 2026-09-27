@@ -1,0 +1,31 @@
+{
+  "phase": "03_dataset_manifest",
+  "status": "PASS",
+  "timestamp": "2026-09-25T01:15:45Z",
+  "dataset_manifest_path": "artifacts/dataset_manifest.json",
+  "total_files": 7,
+  "total_bytes": 2520573701,
+  "total_records": 26435994,
+  "summary": {
+    "train_source1": { "rows": 2206821, "sha256": "591af0e1dfeb65cab71ea6ee8cb69df00f92d6ba6fa79e05746c938775d14973" },
+    "train_source2": { "rows": 5034616, "sha256": "6336c1a055eec79cf8a6d99fdc8d32a2e4d9dc2662e00963cb35d66b89ed09ed" },
+    "train_source3": { "rows": 5285603, "sha256": "098eb33aee3cbfeea9080e72c8ea456ddbf9bda5e656d05f32ebf25db5674c93" },
+    "train_ground_truth": { "rows": 2206821, "sha256": "52f75d506d87e076dd0401d413346d0a7f17b3f9ff36c2ef50f3b0e352efdfd7" },
+    "test_source1": { "rows": 1732544, "sha256": "25257ce32fdfa3ce91a5db4b79c354890bf2a3ae94541bf7005187e1f46d3fd2" },
+    "test_source2": { "rows": 4887273, "sha256": "3cb49a4e3fa316d3f269d0d39e8316c02967675f50244db9dd68c74c988972f0" },
+    "test_source3": { "rows": 5082316, "sha256": "4351336c646ef7414df8552fbbeba572d4240768c34fba378c2e6f477eeb095c" }
+  },
+  "invariants_verified": {
+    "all_files_present": true,
+    "all_schemas_valid": true,
+    "all_prefixes_valid": true,
+    "raw_data_unmodified": true
+  },
+  "tests": {
+    "test_file": "tests/test_manifest.py",
+    "tests_run": 6,
+    "tests_passed": 6,
+    "total_suite_tests": 32,
+    "total_suite_passed": 32
+  }
+}

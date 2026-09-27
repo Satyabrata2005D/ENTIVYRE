@@ -1,0 +1,26 @@
+{
+  "phase": "06_data_profiling_eda",
+  "status": "PASS",
+  "timestamp": "2026-09-25T01:25:20Z",
+  "eda_profile_report": "artifacts/profiles/eda_profile_report.json",
+  "eda_summary_markdown": "artifacts/profiles/eda_summary.md",
+  "key_findings": {
+    "singleton_rate_pct": 5.597,
+    "single_match_rate_pct": 5.345,
+    "multi_match_rate_pct": 89.058,
+    "mean_matches_per_s1": 3.46,
+    "both_s2_and_s3_match_rate_pct": 85.36,
+    "s1_devanagari_names": 0,
+    "s2_devanagari_names_per_200k": 10539,
+    "s3_devanagari_names_per_200k": 6033,
+    "s2_embedded_urls_per_200k": 7728,
+    "s3_embedded_urls_per_200k": 7798
+  },
+  "tests": {
+    "test_file": "tests/test_profiler.py",
+    "tests_run": 2,
+    "tests_passed": 2,
+    "total_suite_tests": 45,
+    "total_suite_passed": 45
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "phase": "18_tfidf_features",
+  "status": "COMPLETED",
+  "engine_module": "ber.features.tfidf_features",
+  "classes": [
+    "TfidfFeatureExtractor"
+  ],
+  "tests_passed": 106,
+  "features_verified": [
+    "name_char_ngram_cosine_similarity",
+    "address_char_ngram_cosine_similarity",
+    "tfidf_retrieval_score_alignment",
+    "subword_typo_tolerance_on_real_tokens",
+    "missing_address_graceful_handling"
+  ]
+}

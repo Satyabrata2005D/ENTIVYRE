@@ -1,0 +1,7 @@
+file,avg_char_length,min_char_length,max_char_length,avg_tokens,has_number_pct,has_postal_pct
+train_source1.tsv,52.08,13,222,8.04,96.55,6.59
+train_source2.tsv,46.24,0,202,7.28,90.67,6.24
+train_source3.tsv,46.83,0,198,7.19,90.66,6.08
+test_source1.tsv,57.1,15,216,8.57,95.9,4.22
+test_source2.tsv,50.31,0,226,7.78,92.66,4.05
+test_source3.tsv,48.71,0,213,7.5,92.33,4.23

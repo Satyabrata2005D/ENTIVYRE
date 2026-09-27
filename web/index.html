@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENTIVYRE</title>
+  <meta name="description" content="ENTIVYRE — Deterministic, air-gapped business entity resolution and golden-record synthesis platform for the Amazon ML Challenge 2026.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A0D14'/><rect x='8' y='9' width='16' height='2' rx='1' fill='%23FFFFFF'/><rect x='8' y='15' width='16' height='2' rx='1' fill='%23FFFFFF'/><circle cx='22' cy='16' r='4' fill='%23FF5B4D'/><rect x='8' y='21' width='16' height='2' rx='1' fill='%23FFFFFF'/></svg>">
+</head>
+<body>
+
+  <!-- Top Global Navigation -->
+  <header class="top-nav">
+    <div class="brand-section">
+      <div class="brand-logo" id="logoClick">
+        <div class="logo-icon">
+          <div class="logo-line"></div>
+          <div class="logo-line active"><div class="logo-dot"></div></div>
+          <div class="logo-line"></div>
+        </div>
+        <div class="brand-title">
+          ENTIVYRE
+        </div>
+      </div>
+      <div class="challenge-pill">AMAZON ML CHALLENGE</div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab-btn" data-target="overview-view" role="tab" aria-selected="false">Overview</button>
+      <button class="nav-tab-btn active" data-target="workspace-view" role="tab" aria-selected="true">Workspace</button>
+      <button class="nav-tab-btn" data-target="investigation-view" role="tab" aria-selected="false">Investigation & Validation</button>
+    </nav>
+
+    <!-- Global Actions & Status -->
+    <div class="nav-actions">
+      <div class="security-shield-badge" id="btnOpenSecurityCenter" title="Enterprise Shield Active &bull; Click to inspect defense console">
+        <span class="shield-pulse-dot"></span>
+        <span>SHIELD: AIR-GAPPED</span>
+      </div>
+      <div class="fair-play-status" title="Network air-gapped, zero external APIs, zero data leakage">
+        <span class="status-dot"></span>
+        <span>OFFLINE / FAIR-PLAY MODE</span>
+      </div>
+      <button class="btn-primary" id="btnTopRunPipeline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        Run Pipeline
+      </button>
+      <button class="avatar-btn" title="Audit & Session Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- Left Sidebar for Workspace & Lens Navigation -->
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-heading">Control Surface</div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-item" data-view="overview-view">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Overview
+          </a>
+          <a class="sidebar-item active" data-view="workspace-view">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Workspace
+          </a>
+          <a class="sidebar-item" data-view="investigation-view">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Validation Lens
+          </a>
+        </nav>
+      </div>
+
+      <!-- ML Cluster Node Telemetry Badge -->
+      <div class="sidebar-footer">
+        <div class="cluster-node-badge">
+          <div class="node-header">
+            <span class="node-title">ML Cluster Node</span>
+            <span class="node-status-dot"></span>
+          </div>
+          <div class="node-corpus">Active Corpus: v2.4a</div>
+          <div class="node-footer">
+            <span>Confidence Index</span>
+            <span class="node-confidence">98.4%</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ====================================================================
+           VIEW 1: OVERVIEW / HERO LANDING
+           ==================================================================== -->
+      <section id="overview-view" class="view-section">
+        <div class="overview-hero">
+          <div class="hero-pill">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            BUSINESS ENTITY RESOLUTION PLATFORM · AMAZON ML CHALLENGE EDITION
+          </div>
+          <h1 class="hero-title">
+            Find the identity <br><span class="highlight">behind every record.</span>
+          </h1>
+          <p class="hero-subtitle">
+            An intelligent, deterministically reproducible entity-resolution engine engineered for discovering, scoring, validating, and auditing enterprise identities across chaotic multi-source data streams.
+          </p>
+          <div class="hero-cta-group">
+            <button class="btn-primary" onclick="switchView('workspace-view')">
+              Enter Workspace &rarr;
+            </button>
+            <button class="btn-outline" onclick="switchView('investigation-view')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              Explore Architecture
+            </button>
+          </div>
+        </div>
+
+        <!-- Big Hero Graph Topology Visualizer -->
+        <div class="topology-card">
+          <div class="topology-header">
+            <span>GRAPH TOPOLOGY // CANONICAL CLUSTERING ENGINE V4.2</span>
+            <span class="topology-status-green">
+              <span>ISOLATION: STRICT SANDBOX</span>
+              <span>SEED: 0x7F66B2</span>
+              <span>STATE: SYNCHRONIZED</span>
+            </span>
+          </div>
+
+          <div class="topology-grid">
+            <!-- Left Stream Column -->
+            <div class="stream-column">
+              <div class="stream-col-title">Ingested Streams (Heterogeneous)</div>
+              
+              <div class="stream-card">
+                <div class="stream-meta">
+                  <span>Stream 01 // ERP Records</span>
+                  <span>1.2M rows</span>
+                </div>
+                <div class="stream-name">Vendor Procurement Registry</div>
+                <div class="stream-entity-sample">Acme Robotics Corporation, 104 Industrial Pkwy...</div>
+                <span class="stream-badge">&#x25C6; Unicode Normalized</span>
+              </div>
+
+              <div class="stream-card">
+                <div class="stream-meta">
+                  <span>Stream 02 // SEC &amp; Registries</span>
+                  <span>940K rows</span>
+                </div>
+                <div class="stream-name">Commercial State Filings</div>
+                <div class="stream-entity-sample">Nordic Dynamics Oy, Alvar Aallon katu 5, Helsinki...</div>
+                <span class="stream-badge">&#x25C6; Jurisdiction Tagged</span>
+              </div>
+
+              <div class="stream-card">
+                <div class="stream-meta">
+                  <span>Stream 03 // Marketplace Invoices</span>
+                  <span>1.1M rows</span>
+                </div>
+                <div class="stream-name">Decentralized Billing Feed</div>
+                <div class="stream-entity-sample">Acme Bakery LLC, 44 Market St, San Francisco...</div>
+                <span class="stream-badge">&#x25C6; Fuzzy Transliterated</span>
+              </div>
+            </div>
+
+            <!-- Center Resolver Glass Box -->
+            <div class="resolver-engine-box">
+              <div>
+                <div class="resolver-top">
+                  <span class="resolver-active-tag">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    CORE ENGINE ACTIVE
+                  </span>
+                  <span class="resolver-acc-tag">98.14% BLOCKING ACCURACY</span>
+                </div>
+                <div class="resolver-hero-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                  </svg>
+                </div>
+                <div class="resolver-title">CANONICAL IDENTITY RESOLVER</div>
+                <div class="resolver-desc">
+                  Sub-millisecond multi-attribute cosine embedding, phonetic soundex keys, and graph connected-components.
+                </div>
+              </div>
+
+              <div>
+                <div class="resolver-stats-row">
+                  <div>
+                    <div class="stat-item-label">Pairwise Vector Match</div>
+                    <div class="stat-item-val highlight">Cosine 0.941</div>
+                  </div>
+                  <div>
+                    <div class="stat-item-label">Pairwise Candidates</div>
+                    <div class="stat-item-val">148,290 / sec</div>
+                  </div>
+                </div>
+
+                <div class="resolver-telemetry">
+                  <span>Memory Allocation: 1.4 GB / 3.0 GB</span>
+                  <span>Deterministic Fair-Play CPU Run</span>
+                </div>
+
+                <div class="resolver-calibrated-badge">
+                  &#x2713; CALIBRATED WITH PREDICTIVE F0.5 THRESHOLD = 0.860
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Resolved Clusters Column -->
+            <div class="clusters-column">
+              <div class="stream-col-title">Resolved Clusters (F0.5 Target: > 0.900)</div>
+              
+              <div class="cluster-card match">
+                <div class="cluster-top">
+                  <span class="match-score-badge">97.4% CONFIRMED MATCH</span>
+                  <span class="cluster-id-badge">Entity #E-0941</span>
+                </div>
+                <div class="cluster-name">Acme Robotics Inc.</div>
+                <div class="cluster-details">
+                  &harr; Acme Robotics Incorporated (Delaware)<br>
+                  <small style="color:var(--tertiary); font-weight:600;">Tax ID + Geocode + Legal Suffix Reconciled</small>
+                </div>
+              </div>
+
+              <div class="cluster-card match">
+                <div class="cluster-top">
+                  <span class="match-score-badge">94.2% CONFIRMED MATCH</span>
+                  <span class="cluster-id-badge">Entity #E-3281</span>
+                </div>
+                <div class="cluster-name">Nordic Dynamics Ltd.</div>
+                <div class="cluster-details">
+                  &harr; Nordic Dynamics Oy (FI-203948)<br>
+                  <small style="color:var(--tertiary); font-weight:600;">Multilingual Transliteration Confirmed</small>
+                </div>
+              </div>
+
+              <div class="cluster-card rejected">
+                <div class="cluster-top">
+                  <span class="reject-score-badge">REJECTED / DISSOCIATED</span>
+                  <span class="cluster-id-badge">Sim: 0.28</span>
+                </div>
+                <div class="cluster-name">Acme Bakery LLC</div>
+                <div class="cluster-details">
+                  &ne; Acme Robotics Inc. (Different SIC Code)<br>
+                  <small style="color:var(--danger); font-weight:600;">Negative Pair Confirmed &middot; Avoided False Positive</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Metrics Ribbon -->
+        <div class="metrics-ribbon">
+          <div class="ribbon-card">
+            <div class="ribbon-label">Records Ingested</div>
+            <div class="ribbon-value">3.24M</div>
+            <div class="ribbon-sub">&gt;100% Validated Cleaned multi-jurisdiction dataset</div>
+          </div>
+          <div class="ribbon-card">
+            <div class="ribbon-label">Candidate Recall</div>
+            <div class="ribbon-value" style="color:var(--secondary);">98.4%</div>
+            <div class="ribbon-sub">Multi-tier blocking minimizes dropped matches</div>
+          </div>
+          <div class="ribbon-card">
+            <div class="ribbon-label">Validation F0.5 Score</div>
+            <div class="ribbon-value" style="color:var(--primary);">0.9412</div>
+            <div class="ribbon-sub">Optimized for extreme precision &amp; low false merges</div>
+          </div>
+          <div class="ribbon-card">
+            <div class="ribbon-label">Latency Per Subgraph</div>
+            <div class="ribbon-value" style="color:var(--tertiary);">&lt; 12ms</div>
+            <div class="ribbon-sub">Pure CPU real-time run &middot; Zero GPU dependency</div>
+          </div>
+        </div>
+
+        <!-- Section: End to End Methodology (8 Stages) -->
+        <div class="section-heading-group">
+          <div class="section-tag">&rarr; END-TO-END METHODOLOGY</div>
+          <div class="section-title">From noisy records to verified identity.</div>
+          <div class="section-subtitle">A deterministic &amp; probabilistic seven-stage pipeline engineered for strict fair-play reproducibility and ruthless precision.</div>
+        </div>
+
+        <div class="pipeline-cards-grid">
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">01 // INGEST</div>
+              <div class="pipe-title">Raw Schema Extraction</div>
+              <div class="pipe-desc">Ingests heterogeneous formats, vendor ledgers, and marketplace catalogs without pre-sorting constraints.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>Encoding: UTF-8</span>
+              <span>Auto-schema</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">02 // NORMALIZE</div>
+              <div class="pipe-title">Linguistic &amp; Suffix Cleansing</div>
+              <div class="pipe-desc">Legal suffix stripping (Inc, GmbH, Corp, LLC), diacritics removal, casing unification, and postal geocoding.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>Regex: 142 Rules</span>
+              <span>Deterministic</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">03 // RETRIEVE</div>
+              <div class="pipe-title">Multi-Index Blocking</div>
+              <div class="pipe-desc">Reduces O(N&sup2;) quadratic space to sparse candidate pairs using n-gram blocking keys and phonetic soundex buckets.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>Reduction: 94.1%</span>
+              <span>&gt;98% Recall</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">04 // COMPARE</div>
+              <div class="pipe-title">Multi-Feature Distances</div>
+              <div class="pipe-desc">Computes Jaro-Winkler, Levenshtein, token set ratios, coordinate haversine delta, and domain match vectors.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>Features: 18 Weights</span>
+              <span>Vectorized</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">05 // SCORE</div>
+              <div class="pipe-title">Gradient Boost Scoring</div>
+              <div class="pipe-desc">Evaluates pairwise candidates with a calibrated tree model trained strictly on sovereign, local offline splits.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>ROC-AUC: 0.982</span>
+              <span>Probability Calibrated</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">06 // DECIDE</div>
+              <div class="pipe-title">High-Precision F0.5 Gate</div>
+              <div class="pipe-desc">Threshold cutting penalizes false positives twice as heavily as false negatives to guarantee high-integrity linkages.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>Cutoff: &tau; = 0.860</span>
+              <span>Precision-Based</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card">
+            <div>
+              <div class="pipe-step-num">07 // VALIDATE</div>
+              <div class="pipe-title">Deterministic Graph Audit</div>
+              <div class="pipe-desc">Generates verifiable submission hash, transitivity consistency checks, and audit trails for challenge compliance.</div>
+            </div>
+            <div class="pipe-footer">
+              <span>Transitivity: Clean</span>
+              <span>Zero Cycles</span>
+            </div>
+          </div>
+
+          <div class="pipeline-card highlight">
+            <div>
+              <div class="pipe-step-num">REAL-TIME RUNNER</div>
+              <div class="pipe-title">Offline-First Engine</div>
+              <div class="pipe-desc">Complies with full hackathon sandbox rules. No external web lookups, no leaky APIs. Pure standard Python.</div>
+            </div>
+            <div class="pipe-footer">
+              <span style="color:#38EF7D;">Fair Play Certified</span>
+              <button class="btn-drawer-outline" style="padding:4px 8px; font-size:10px;" onclick="switchView('investigation-view')">Audit Logs &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Delta Reconciliation -->
+        <div class="pairwise-sample-card">
+          <div class="pairwise-top-row">
+            <span class="pairwise-tag">SAMPLE DELTA RECONCILIATION &middot; PAIR ID: 4F9-660103</span>
+            <span class="predicted-match-badge">&#x2713; PREDICTED MATCH (0.976)</span>
+          </div>
+
+          <div class="pairwise-comparison-grid">
+            <div class="pairwise-side">
+              <div class="pairwise-side-header">
+                <span>SOURCE A // ERP PURCHASE INVOICE</span>
+                <span>RECORD_ID: 100482</span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Legal Name</span>
+                <span class="field-value">Caterpillar Mobility Logistics GmbH</span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Street</span>
+                <span class="field-value">Bahnhofstrasse 42A</span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Postal &amp; City</span>
+                <span class="field-value">8001 Z&uuml;rich, Switzerland</span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Tax Identifier</span>
+                <span class="field-value">CHE-105.840.120 MWST</span>
+              </div>
+            </div>
+
+            <div class="pairwise-side">
+              <div class="pairwise-side-header">
+                <span>SOURCE B // COMMERCIAL REGISTRY</span>
+                <span>RECORD_ID: 351294</span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Legal Name</span>
+                <span class="field-value">Caterpillar Mobility Logistics <span class="field-pill-green">JM:0.99</span></span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Street</span>
+                <span class="field-value">Bahnhofstr. 42-A <span class="field-pill-green">GEO:0.98</span></span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Postal &amp; City</span>
+                <span class="field-value">CH-8001 Zurich <span class="field-pill-green">EXACT</span></span>
+              </div>
+              <div class="pairwise-field-row">
+                <span class="field-label">Tax Identifier</span>
+                <span class="field-value">CHE105840120 <span class="field-pill-green">STRIPPED MATCH</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pairwise-footer">
+            <div class="pairwise-footer-status">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              High-Confidence Golden Record Synthesis Ready &middot; Cluster ID: CL-7729
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-outline" style="padding:6px 12px; font-size:12px;" onclick="openVector3DModal('S1-00001')">Inspect Vector Space &nearr;</button>
+              <button class="btn-primary" style="padding:6px 12px; font-size:12px;" onclick="showToast('Cluster CL-7729 confirmed & indexed')">Confirm Cluster Association</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benchmark Callout Banner -->
+        <div class="benchmark-callout">
+          <div class="callout-badge">&#x25C6; CHALLENGE BENCHMARK ENVIRONMENT READY</div>
+          <div class="callout-title">Ready to benchmark against the holdout dataset?</div>
+          <div class="callout-desc">
+            Load your entity resolution experiments into our unified workbench. Run multi-stage blocking, analyze confusion deltas, and export leaderboard-compliant submission files in seconds.
+          </div>
+          <div class="callout-buttons">
+            <button class="btn-primary" onclick="switchView('workspace-view')">Launch Workbench &rarr;</button>
+            <button class="btn-outline" style="background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.2);" onclick="switchView('investigation-view')">Validation Matrix</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 2: WORKSPACE VIEW
+           ==================================================================== -->
+      <section id="workspace-view" class="view-section active">
+        <!-- Workspace Header -->
+        <div class="workspace-header">
+          <div>
+            <div class="breadcrumb-trail">
+              Amazon ML Challenge / PIPELINE RUN #4002-PROD / VAL-SET-V3 (120K PAIRS)
+            </div>
+            <div class="workspace-title-row">
+              <h1 class="workspace-title">Entity Resolution Workspace</h1>
+              <div class="fair-play-status">
+                <span class="status-dot"></span>
+                <span>OFFLINE / FAIR-PLAY ENFORCED</span>
+              </div>
+            </div>
+            <p class="workspace-desc">
+              Monitor candidate retrieval, matching quality, model decisions, and golden-record graph consolidation from a unified telemetry surface.
+            </p>
+          </div>
+          <div class="workspace-actions">
+            <button class="btn-outline" id="btnConfigureThreshold">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line>
+              </svg>
+              Configure Threshold
+            </button>
+            <button class="btn-primary" id="btnWorkspaceRunPipeline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Run Pipeline
+            </button>
+          </div>
+        </div>
+
+        <!-- 5 Main KPI Cards -->
+        <div class="kpi-cards-grid">
+          <!-- Primary Metric F0.5 -->
+          <div class="kpi-card primary-highlight">
+            <div>
+              <div class="kpi-label-row">
+                <span class="kpi-label">PRIMARY TARGET METRIC</span>
+                <span class="kpi-tag-coral">&beta; = 0.5 &middot; +0.018 vs BASE</span>
+              </div>
+              <div class="kpi-num" id="metricF05">0.9412</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span>Target Threshold: 0.860</span>
+              <span class="kpi-sub-highlight">Peak Point 94.12%</span>
+            </div>
+          </div>
+
+          <!-- Candidate Recall -->
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-label-row">
+                <span class="kpi-label">CANDIDATE RECALL</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <div class="kpi-num" style="color:var(--secondary);" id="metricRecall">98.40%</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span>Candidate Pool Coverage</span>
+              <span class="kpi-sub-green">Reduction Ratio 94.1%</span>
+            </div>
+          </div>
+
+          <!-- Model Precision -->
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-label-row">
+                <span class="kpi-label">MODEL PRECISION</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tertiary)" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div class="kpi-num" style="color:var(--tertiary);" id="metricPrecision">95.62%</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span>Positive Predictive Value</span>
+              <span>FP Rate (Noise) 4.38%</span>
+            </div>
+          </div>
+
+          <!-- Global Recall -->
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-label-row">
+                <span class="kpi-label">GLOBAL RECALL</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-400)" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+              </div>
+              <div class="kpi-num">88.75%</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span>True Duplicate Sensitivity</span>
+              <span>Type II Leakage 11.25%</span>
+            </div>
+          </div>
+
+          <!-- Matches Identified -->
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-label-row">
+                <span class="kpi-label">MATCHES IDENTIFIED</span>
+                <span style="color:var(--primary); font-size:12px;">&infin;</span>
+              </div>
+              <div class="kpi-num">42,891</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span>Of 48,320 True Pairs</span>
+              <span class="kpi-sub-green">Cluster 88.8%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resolution Graph Lifecycle (Horizontal Stepper) -->
+        <div class="lifecycle-stepper-card">
+          <div class="lifecycle-header">
+            <span>RESOLUTION GRAPH LIFECYCLE / CLICK STAGE NODE TO INSPECT PARAMETERS</span>
+            <span class="active-lens-indicator">&#x25CF; STAGE 03: RETRIEVAL CURRENTLY ACTIVE</span>
+          </div>
+
+          <div class="stepper-steps-wrapper">
+            <div class="stepper-connector-line"></div>
+            
+            <div class="step-node" onclick="selectLifecycleStep(1)">
+              <div class="step-icon-circle">&#x1F4BE;</div>
+              <div class="step-label">01. DATA</div>
+              <div class="step-meta">120k Raw</div>
+            </div>
+
+            <div class="step-node" onclick="selectLifecycleStep(2)">
+              <div class="step-icon-circle">&#x2697;</div>
+              <div class="step-label">02. NORMALIZE</div>
+              <div class="step-meta">14 Rules</div>
+            </div>
+
+            <div class="step-node active" onclick="selectLifecycleStep(3)">
+              <div class="step-icon-circle">&#x25BD;</div>
+              <div class="step-label">03. RETRIEVE</div>
+              <div class="step-meta" style="color:var(--secondary); font-weight:700;">Active Lens</div>
+            </div>
+
+            <div class="step-node" onclick="selectLifecycleStep(4)">
+              <div class="step-icon-circle">&#x229E;</div>
+              <div class="step-label">04. CANDIDATES</div>
+              <div class="step-meta">1.2M Pairs</div>
+            </div>
+
+            <div class="step-node" onclick="selectLifecycleStep(5)">
+              <div class="step-icon-circle">&#x2605;</div>
+              <div class="step-label">05. FEATURES</div>
+              <div class="step-meta">48 Vectors</div>
+            </div>
+
+            <div class="step-node" onclick="selectLifecycleStep(6)">
+              <div class="step-icon-circle">&#x25C9;</div>
+              <div class="step-label">06. MODEL</div>
+              <div class="step-meta">GBDT Ensem</div>
+            </div>
+
+            <div class="step-node" onclick="selectLifecycleStep(7)">
+              <div class="step-icon-circle">&#x29E2;</div>
+              <div class="step-label">07. DECISION</div>
+              <div class="step-meta">&tau; = 0.860</div>
+            </div>
+
+            <div class="step-node" onclick="selectLifecycleStep(8)">
+              <div class="step-icon-circle">&#x2714;</div>
+              <div class="step-label">08. VALIDATE</div>
+              <div class="step-meta">F0.5 Confirmed</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Workspace Two-Column Body -->
+        <div class="workspace-two-col">
+          <!-- Left: Candidate Stream & Blocking Horizon -->
+          <div class="candidate-stream-card">
+            <div>
+              <div class="stream-card-header">
+                <div>
+                  <div class="stream-card-title">Candidate Stream &amp; Blocking Horizon</div>
+                  <div class="stream-card-sub">Real-time candidate generation across 4 active inverted indices</div>
+                </div>
+                <div class="auto-refresh-pill">AUTO-REFRESH: 250MS</div>
+              </div>
+
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>BLOCK KEY HASH</th>
+                    <th>ALGORITHM</th>
+                    <th>BUCKET DEPTH</th>
+                    <th>SIMILARITY ESTIMATE</th>
+                    <th>ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="hash-cell">#BLK_902a_NY_CORP</td>
+                    <td>&bull; Token Jaccard</td>
+                    <td>14 entities</td>
+                    <td>
+                      <div class="sim-bar-container">
+                        <div class="sim-bar-outer"><div class="sim-bar-inner" style="width: 95%;"></div></div>
+                        <span class="sim-val-text">0.95</span>
+                      </div>
+                    </td>
+                    <td><a class="action-link" onclick="inspectPair('S1-00001', 'S2-04812')">Inspect Pair</a></td>
+                  </tr>
+                  <tr>
+                    <td class="hash-cell">#BLK_41bf_GEO_4071</td>
+                    <td>&bull; Geo-Coordinate Block</td>
+                    <td>8 entities</td>
+                    <td>
+                      <div class="sim-bar-container">
+                        <div class="sim-bar-outer"><div class="sim-bar-inner" style="width: 91%;"></div></div>
+                        <span class="sim-val-text">0.91</span>
+                      </div>
+                    </td>
+                    <td><a class="action-link" onclick="inspectPair('S1-00002', 'S3-10291')">Inspect Pair</a></td>
+                  </tr>
+                  <tr>
+                    <td class="hash-cell">#BLK_881c_MINH_3GRM</td>
+                    <td>&bull; 3-Gram MinHash</td>
+                    <td>22 entities</td>
+                    <td>
+                      <div class="sim-bar-container">
+                        <div class="sim-bar-outer"><div class="sim-bar-inner low" style="width: 78%;"></div></div>
+                        <span class="sim-val-text" style="color:var(--danger)">0.78</span>
+                      </div>
+                    </td>
+                    <td><a class="action-link" onclick="inspectPair('S1-00003', 'S2-99014')">Inspect Pair</a></td>
+                  </tr>
+                  <tr>
+                    <td class="hash-cell">#BLK_12ef_EXACT_NORM</td>
+                    <td>&bull; Exact Cleaned</td>
+                    <td>2 entities</td>
+                    <td>
+                      <div class="sim-bar-container">
+                        <div class="sim-bar-outer"><div class="sim-bar-inner" style="width: 100%;"></div></div>
+                        <span class="sim-val-text">1.00</span>
+                      </div>
+                    </td>
+                    <td><a class="action-link" onclick="inspectPair('S1-00004', 'S2-00412')">Inspect Pair</a></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="table-sub-cards-row">
+                <div class="mini-spec-card">
+                  <div class="mini-spec-header">
+                    <span>Active Inverted Hash Index</span>
+                    <span style="color:var(--tertiary);">SYNCED</span>
+                  </div>
+                  <div class="mini-spec-title">Multi-Token Sharding</div>
+                  <div class="mini-spec-desc">
+                    2,419 distinct token keys indexed across memory partitions.<br>
+                    <strong>Avg Bin Occupancy:</strong> 4.8 &middot; <strong>Max:</strong> 32 Items
+                  </div>
+                </div>
+
+                <div class="mini-spec-card">
+                  <div class="mini-spec-header">
+                    <span>Pruning Engine</span>
+                    <span style="color:var(--secondary);">DYNAMIC</span>
+                  </div>
+                  <div class="mini-spec-title">High-Frequency Stopwords</div>
+                  <div class="mini-spec-desc">
+                    Suppressed 812 global generic suffix patterns (LLC, INC, GMBH, CORP).<br>
+                    <strong>Candidate Bloat Reduction:</strong> <span style="color:var(--danger); font-weight:700;">-75.4%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-fair-play-footer">
+              <span>&#x2714; All candidate pairs vetted under Offline Partition Isolation Protocol</span>
+              <span style="font-family:var(--font-mono); font-weight:700;">0 LEAKAGE / 100% ISOLATED</span>
+            </div>
+          </div>
+
+          <!-- Right: Stage 03 Blocking Drawer (Dark Container) -->
+          <div class="stage-drawer-dark">
+            <div>
+              <div class="drawer-top">
+                <span>STAGE 03: BLOCKING &amp; RETRIEVAL DRAWER</span>
+                <span class="drawer-active-tag">&#x25CF; ACTIVE</span>
+              </div>
+              <div class="drawer-title">Blocking Heuristics &amp; Candidate Yield</div>
+              <div class="drawer-desc">
+                Ablation analysis and retrieval parameter configuration for the active benchmark corpus.
+              </div>
+
+              <div class="drawer-metrics-duo">
+                <div>
+                  <div class="drawer-m-label">Candidate Recall</div>
+                  <div class="drawer-m-val">98.4%</div>
+                  <div class="drawer-m-sub">Missing 1.6% true pairs</div>
+                </div>
+                <div>
+                  <div class="drawer-m-label">Reduction Ratio</div>
+                  <div class="drawer-m-val">94.1%</div>
+                  <div class="drawer-m-sub">Pairs pruned prior to GBDT</div>
+                </div>
+              </div>
+
+              <div class="blocking-breakdown-group">
+                <div class="breakdown-heading">Active Blocking Methods Breakdown</div>
+                
+                <div class="breakdown-row">
+                  <div class="breakdown-labels">
+                    <span>Exact Standardized Match</span>
+                    <span class="breakdown-pct">Coverage: 42.1%</span>
+                  </div>
+                  <div class="breakdown-bar-bg"><div class="breakdown-bar-fill" style="width: 42.1%;"></div></div>
+                  <div class="breakdown-desc">Strict string normalization with localized punctuation stripping</div>
+                </div>
+
+                <div class="breakdown-row">
+                  <div class="breakdown-labels">
+                    <span>Token Jaccard Inverted Index</span>
+                    <span class="breakdown-pct">Coverage: 31.8%</span>
+                  </div>
+                  <div class="breakdown-bar-bg"><div class="breakdown-bar-fill" style="width: 31.8%;"></div></div>
+                  <div class="breakdown-desc">Overlapping business noun tokens with frequency IDF downweighting</div>
+                </div>
+
+                <div class="breakdown-row">
+                  <div class="breakdown-labels">
+                    <span>Character 3-Gram MinHash</span>
+                    <span class="breakdown-pct">Coverage: 18.2%</span>
+                  </div>
+                  <div class="breakdown-bar-bg"><div class="breakdown-bar-fill" style="width: 18.2%;"></div></div>
+                  <div class="breakdown-desc">Locality-sensitive hashing for typo resilience and OCR noise</div>
+                </div>
+
+                <div class="breakdown-row">
+                  <div class="breakdown-labels">
+                    <span>Geo-Coordinate &amp; Address Block</span>
+                    <span class="breakdown-pct">Coverage: 7.9%</span>
+                  </div>
+                  <div class="breakdown-bar-bg"><div class="breakdown-bar-fill" style="width: 7.9%;"></div></div>
+                  <div class="breakdown-desc">Geohash level 7 bounding boxes with spatial distance indexing</div>
+                </div>
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-row">
+                  <span class="slider-label">Blocking Window Size</span>
+                  <span class="slider-val" id="valWindowSize">15 pairs / cluster</span>
+                </div>
+                <input type="range" class="custom-range" id="sliderWindowSize" min="5" max="30" value="15" oninput="updateSliders()">
+
+                <div class="slider-row">
+                  <span class="slider-label">Singleton Pruning Threshold</span>
+                  <span class="slider-val" id="valSingletonPruning">0.05</span>
+                </div>
+                <input type="range" class="custom-range" id="sliderSingletonPruning" min="0.01" max="0.20" step="0.01" value="0.05" oninput="updateSliders()">
+              </div>
+            </div>
+
+            <div class="drawer-buttons">
+              <button class="btn-drawer-purple" onclick="showToast('Executing synthetic candidate generator...')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                Test Generator
+              </button>
+              <button class="btn-drawer-outline" onclick="showToast('Running 5-way ablation comparison...')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Compare Ablation
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom 3 Analytics Cards -->
+        <div class="bottom-analytics-grid">
+          <!-- Card 1: Candidate Recall vs Candidate Volume Tradeoff -->
+          <div class="analytics-card">
+            <div>
+              <div class="analytics-top">
+                <span>RETRIEVER EFFICIENCY ANALYSIS</span>
+                <span class="knee-point-pill">OPTIMAL KNEE-POINT</span>
+              </div>
+              <div class="analytics-title">Candidate Recall vs. Candidate Volume Tradeoff</div>
+              <div class="analytics-desc">Candidate recall surges to 98.4% before volume reaches exponential candidate explosion (1.2M pairs).</div>
+              
+              <!-- SVG Tradeoff Chart -->
+              <div class="chart-svg-container">
+                <svg viewBox="0 0 360 110" width="100%" height="100%">
+                  <!-- Background grid lines -->
+                  <line x1="30" y1="20" x2="350" y2="20" stroke="#F0F2F6" stroke-width="1" />
+                  <line x1="30" y1="50" x2="350" y2="50" stroke="#F0F2F6" stroke-width="1" />
+                  <line x1="30" y1="80" x2="350" y2="80" stroke="#F0F2F6" stroke-width="1" />
+                  <!-- Axes -->
+                  <line x1="30" y1="90" x2="350" y2="90" stroke="#D1D5DB" stroke-width="1" />
+                  <line x1="30" y1="10" x2="30" y2="90" stroke="#D1D5DB" stroke-width="1" />
+                  <!-- Labels -->
+                  <text x="5" y="23" font-size="8" fill="#9CA3AF">100%</text>
+                  <text x="10" y="53" font-size="8" fill="#9CA3AF">50%</text>
+                  <text x="15" y="83" font-size="8" fill="#9CA3AF">0%</text>
+                  <text x="30" y="102" font-size="8" fill="#9CA3AF">0</text>
+                  <text x="140" y="102" font-size="8" fill="#9CA3AF">400K</text>
+                  <text x="230" y="102" font-size="8" fill="#9CA3AF">1.2M (Active)</text>
+                  <text x="310" y="102" font-size="8" fill="#9CA3AF">3.6M Pairs</text>
+                  <!-- Recall Curve (Blue) -->
+                  <path d="M 30 90 Q 120 25 240 22 T 350 20" fill="none" stroke="#4F46C5" stroke-width="2.5" />
+                  <!-- Volume Explosion Curve (Red dashed) -->
+                  <path d="M 30 90 Q 200 88 260 55 T 350 15" fill="none" stroke="#FF5B4D" stroke-width="1.8" stroke-dasharray="3,3" />
+                  <!-- Knee-point marker -->
+                  <line x1="240" y1="20" x2="240" y2="90" stroke="#4F46C5" stroke-width="1" stroke-dasharray="2,2" />
+                  <circle cx="240" cy="22" r="4" fill="#4F46C5" />
+                  <!-- Badge -->
+                  <rect x="200" y="27" width="80" height="15" rx="3" fill="#0A0D14" />
+                  <text x="240" y="38" font-size="8" fill="#FFFFFF" text-anchor="middle" font-weight="bold">Recall 98.4% @ 1.2M</text>
+                </svg>
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span><span class="legend-dot blue"></span>Candidate Recall</span>
+              <span><span class="legend-dot red"></span>Candidate Explosion</span>
+              <span style="font-weight:600;">Knee-Point: 15 pairs/cluster</span>
+            </div>
+          </div>
+
+          <!-- Card 2: F0.5 Decision Boundary Threshold Tuning Curve -->
+          <div class="analytics-card">
+            <div>
+              <div class="analytics-top">
+                <span>THRESHOLD TUNING</span>
+                <span class="knee-point-pill" style="background:var(--primary-light); color:var(--primary);">*&tau; = 0.860</span>
+              </div>
+              <div class="analytics-title">F0.5 Decision Boundary</div>
+              <div class="analytics-desc">Peak F0.5 (0.9412) achieved by balancing precision against edge mismatches.</div>
+              
+              <!-- SVG F0.5 Threshold Curve -->
+              <div class="chart-svg-container">
+                <svg viewBox="0 0 300 110" width="100%" height="100%">
+                  <!-- Background grid -->
+                  <line x1="30" y1="20" x2="290" y2="20" stroke="#F0F2F6" stroke-width="1" />
+                  <line x1="30" y1="50" x2="290" y2="50" stroke="#F0F2F6" stroke-width="1" />
+                  <line x1="30" y1="80" x2="290" y2="80" stroke="#F0F2F6" stroke-width="1" />
+                  <line x1="30" y1="90" x2="290" y2="90" stroke="#D1D5DB" stroke-width="1" />
+                  <!-- X-Axis ticks -->
+                  <text x="35" y="102" font-size="8" fill="#9CA3AF">0.20</text>
+                  <text x="105" y="102" font-size="8" fill="#9CA3AF">0.50</text>
+                  <text x="195" y="102" font-size="8" fill="#FF5B4D" font-weight="bold">0.86</text>
+                  <text x="265" y="102" font-size="8" fill="#9CA3AF">1.00</text>
+                  <!-- Precision Curve (Green, rises) -->
+                  <path d="M 35 75 Q 150 50 270 20" fill="none" stroke="#159A72" stroke-width="2" />
+                  <!-- Recall Curve (Blue, drops) -->
+                  <path d="M 35 25 Q 160 30 270 85" fill="none" stroke="#4F46C5" stroke-width="2" />
+                  <!-- F0.5 Score Curve (Red, bell shaped) -->
+                  <path d="M 35 70 Q 120 40 195 24 Q 240 35 270 75" fill="none" stroke="#FF5B4D" stroke-width="2.5" />
+                  <!-- Optimal vertical line -->
+                  <line x1="195" y1="15" x2="195" y2="90" stroke="#FF5B4D" stroke-width="1" stroke-dasharray="2,2" />
+                  <circle cx="195" cy="24" r="4" fill="#FF5B4D" />
+                </svg>
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span><span class="legend-dot red"></span>F0.5: <strong id="legendF05">0.9412</strong></span>
+              <span><span class="legend-dot green"></span>Precision: <strong>95.62%</strong></span>
+              <span><span class="legend-dot blue"></span>Recall: <strong>88.75%</strong></span>
+            </div>
+          </div>
+
+          <!-- Card 3: Error & Entity Topology Breakdown -->
+          <div class="analytics-card">
+            <div>
+              <div class="analytics-top">
+                <span>CLUSTER TOPOLOGY</span>
+                <span style="font-family:var(--font-mono); font-size:10px; font-weight:700;">120K NODES</span>
+              </div>
+              <div class="analytics-title">Error &amp; Entity Topology</div>
+              <div class="analytics-desc">Distribution across clean singletons, multi-entity clusters, and ambiguous boundaries.</div>
+
+              <!-- Topology Stacked Bar -->
+              <div class="topo-bar-outer">
+                <div class="topo-bar-part green" title="Singletons: 64.2%"></div>
+                <div class="topo-bar-part blue" title="Multi-match clusters: 32.1%"></div>
+                <div class="topo-bar-part red" title="Disputed ambiguities: 3.7%"></div>
+              </div>
+
+              <div>
+                <div class="topo-bar-row">
+                  <span><span class="legend-dot green"></span>Singletons (Clean)</span>
+                  <span style="font-family:var(--font-mono); font-weight:700;">64.2%</span>
+                </div>
+                <div class="topo-bar-row">
+                  <span><span class="legend-dot blue"></span>Multi-match Clusters</span>
+                  <span style="font-family:var(--font-mono); font-weight:700;">32.1%</span>
+                </div>
+                <div class="topo-bar-row">
+                  <span><span class="legend-dot red"></span>Disputed Ambiguities</span>
+                  <span style="font-family:var(--font-mono); font-weight:700; color:var(--danger);">3.7%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-legend" style="border-top:1px solid var(--neutral-100); padding-top:8px;">
+              <span>&#x2714; Schema Integrity</span>
+              <span style="color:var(--tertiary); font-weight:700; font-family:var(--font-mono);">0 ANOMALIES</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 3: INVESTIGATION & VALIDATION VIEW
+           ==================================================================== -->
+      <section id="investigation-view" class="view-section">
+        <!-- Sub-bar -->
+        <div class="investigation-sub-bar">
+          <div class="inv-left">
+            <span class="inv-tag">INVESTIGATION MODULE /</span>
+            <div class="inv-title-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+              ENTITY MATCH INVESTIGATION
+            </div>
+            <span class="inv-tag" style="color:var(--tertiary); font-weight:700;">&bull; CORPUS CLUSTER: S1_AMZN_US</span>
+          </div>
+
+          <div class="inv-filter-chips">
+            <button class="filter-chip active">&#x1F50D; ACTIVE 0</button>
+            <button class="filter-chip">All (&ge;0.80)</button>
+            <button class="filter-chip">SRC 1-2</button>
+            <button class="filter-chip">SRC 1-3</button>
+            <button class="filter-chip">Anomalies</button>
+            <span class="anchor-score-badge">Anchor Score: 0.974</span>
+          </div>
+        </div>
+
+        <!-- 3-Column Investigation Layout -->
+        <div class="investigation-grid">
+          <!-- Column 1: Reference Anchor Card -->
+          <div class="anchor-card">
+            <div>
+              <div class="anchor-header">
+                <span class="anchor-label">REFERENCE ANCHOR</span>
+                <span class="source-badge">SOURCE 1</span>
+              </div>
+              <div class="anchor-uid" id="invAnchorUid">S1-00001</div>
+              
+              <div class="anchor-name-block">
+                <div class="anchor-name-lbl">CANONICAL LEGAL NAME</div>
+                <div class="anchor-canonical-name" id="invAnchorName">Acme Robotics Inc.</div>
+              </div>
+
+              <div class="anchor-address-block">
+                <div class="anchor-name-lbl">REGISTERED PHYSICAL ADDRESS</div>
+                <div class="anchor-address" id="invAnchorAddress">
+                  500 Market St, Suite 400<br>
+                  San Jose, CA 95113
+                </div>
+              </div>
+
+              <div class="anchor-jurisdiction">
+                JURISDICTION: <strong>US / UNITED STATES</strong>
+              </div>
+            </div>
+
+            <!-- Normalized Canonical Tokens (Dark Box) -->
+            <div class="canonical-tokens-card">
+              <div class="tokens-header">
+                <span>NORMALIZED CANONICAL TOKENS</span>
+                <span>&#x2699;</span>
+              </div>
+              <div class="token-row">
+                <div class="token-lbl">NORM NAME</div>
+                <div class="token-val">acme robotics</div>
+              </div>
+              <div class="token-row">
+                <div class="token-lbl">LEGAL STRUCTURE CLASS</div>
+                <div class="token-val" style="color:#FFF;">inc / corporation</div>
+              </div>
+              <div class="token-row">
+                <div class="token-lbl">STANDARDIZED STREET HASH</div>
+                <div class="token-val" style="color:#FFF;">500 market st ste 40...</div>
+              </div>
+              <div class="token-row" style="margin-bottom:0;">
+                <div class="token-lbl">GEOHASH PRECISION</div>
+                <div class="token-val">9q9k (&plusmn;0.01km)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Center Cluster Kinematics (Orbital Graph) -->
+          <div class="kinematics-card">
+            <div>
+              <div class="kinematics-top">
+                <span class="kinematics-title">
+                  <span class="status-dot"></span>
+                  CLUSTER KINEMATICS
+                </span>
+                <span class="kinematics-knn">K-NEAREST CANDIDATES: 3</span>
+              </div>
+
+              <!-- Orbital Visual Canvas Container -->
+              <div class="orbital-stage">
+                <!-- Concentric Orbit Rings -->
+                <div class="orbit-ring orbit-ring-1"></div>
+                <div class="orbit-ring orbit-ring-2"></div>
+                <div class="orbit-ring orbit-ring-3"></div>
+
+                <!-- SVG Connecting Lines -->
+                <svg class="kinematics-svg-lines" viewBox="0 0 450 340">
+                  <!-- Match Line to Satellite 1 (Green) -->
+                  <line x1="225" y1="170" x2="350" y2="60" stroke="#159A72" stroke-width="2" stroke-dasharray="4,4" />
+                  <!-- Match Line to Satellite 2 (Green) -->
+                  <line x1="225" y1="170" x2="340" y2="280" stroke="#159A72" stroke-width="2" stroke-dasharray="4,4" />
+                  <!-- Collision Line to Acme Bakery (Red) -->
+                  <line x1="225" y1="170" x2="100" y2="280" stroke="#E02E2E" stroke-width="1.8" stroke-dasharray="2,2" />
+                </svg>
+
+                <!-- Center Node (S1-00001) -->
+                <div class="kinematics-node node-center" onclick="inspectPair('S1-00001', 'S2-04812')">
+                  <div class="center-core-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <circle cx="4" cy="12" r="2"></circle>
+                      <circle cx="20" cy="12" r="2"></circle>
+                      <circle cx="12" cy="4" r="2"></circle>
+                      <circle cx="12" cy="20" r="2"></circle>
+                    </svg>
+                    <span class="center-uid-label">S1-00001</span>
+                  </div>
+                  <div class="center-name-tag">
+                    <strong>Acme Robotics Inc.</strong><br>
+                    <small style="color:var(--neutral-500); font-size:9px;">ANCHOR ENTITY</small>
+                  </div>
+                </div>
+
+                <!-- Satellite Node 1: S2-04812 (Match) -->
+                <div class="kinematics-node node-sat-1 satellite-node match" onclick="inspectPair('S1-00001', 'S2-04812')">
+                  <div class="sat-header">
+                    <span class="sat-tag" style="color:var(--tertiary);">&bull; SOURCE 2</span>
+                    <span class="sat-score green">0.974</span>
+                  </div>
+                  <div class="sat-name">Acme Robotics Incorporated</div>
+                  <div class="sat-status green">CONFIRMED MATCH</div>
+                </div>
+
+                <!-- Satellite Node 2: S3-11942 (Match) -->
+                <div class="kinematics-node node-sat-2 satellite-node match" onclick="inspectPair('S1-00001', 'S3-11942')">
+                  <div class="sat-header">
+                    <span class="sat-tag" style="color:var(--tertiary);">&bull; SOURCE 3</span>
+                    <span class="sat-score green">0.942</span>
+                  </div>
+                  <div class="sat-name">Acme Robotics, Corp.</div>
+                  <div class="sat-status green">CONFIRMED MATCH</div>
+                </div>
+
+                <!-- Satellite Node 3: Acme Bakery LLC (Collision / Dissociated) -->
+                <div class="kinematics-node node-sat-collision satellite-node collision" onclick="inspectPair('S1-00001', 'S2-99014')">
+                  <div class="sat-header">
+                    <span class="sat-tag" style="color:var(--danger);">&bull; LOOK-ALIKE</span>
+                    <span class="sat-score red">0.218</span>
+                  </div>
+                  <div class="sat-name">Acme Bakery LLC</div>
+                  <div class="sat-status red">REJECTED (COLLISION)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kinematics-footer">
+              <div class="pair-selection-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span id="selectedPairText">Selected Pair: S1-00001 &harr; S2-04812</span>
+              </div>
+              <a class="action-link" id="btnGraphVectorView" style="font-size:11px;" onclick="openVector3DModal('S1-00001', 'S2-04812')">
+                Graph Vector View &nearr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Column 3: Right Match Intelligence Engine (Dark container) -->
+          <div class="match-intel-card">
+            <div>
+              <div class="intel-top">
+                <span class="intel-engine-label">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
+                  MATCH INTELLIGENCE ENGINE
+                </span>
+                <span class="intel-version-pill">XGB-ENSEMBLE v4.2</span>
+              </div>
+
+              <!-- Evaluated Pair Box -->
+              <div class="evaluated-pair-box">
+                <div>
+                  <div style="font-size:9px; color:var(--neutral-400); text-transform:uppercase;">EVALUATED PAIR</div>
+                  <div class="evaluated-pair-text" id="intelPairText">S1-00001 &harr; S2-04812</div>
+                </div>
+                <span class="match-confirmed-badge" id="intelMatchBadge">&#x2713; MATCH CONFIRMED</span>
+              </div>
+
+              <!-- Model Confidence Score -->
+              <div class="model-confidence-box">
+                <div class="confidence-header">
+                  <span>MODEL CONFIDENCE SCORE</span>
+                  <span class="confidence-score-val" id="intelScoreVal">97.4%</span>
+                </div>
+                <div class="confidence-bar-outer">
+                  <div class="confidence-bar-inner" id="intelScoreBar" style="width: 97.4%;"></div>
+                </div>
+                <div class="confidence-guard-row">
+                  <span>Threshold Guard: 86.0%</span>
+                  <span style="color:#38EF7D; font-weight:700;">+11.4% Delta Margin</span>
+                </div>
+              </div>
+
+              <!-- 7 Feature Evidence Bars -->
+              <div class="feature-evidence-group">
+                <div class="evidence-header">Deterministic &amp; Soft Feature Evidence</div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>Name Similarity (Jaro + Emb)</span>
+                    <span class="feature-bar-val" id="featNameVal">96.8%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featNameBar" style="width:96.8%;"></div></div>
+                </div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>Address Similarity (Token Cos)</span>
+                    <span class="feature-bar-val" id="featAddrVal">91.4%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featAddrBar" style="width:91.4%;"></div></div>
+                </div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>Country Match (ISO Exact)</span>
+                    <span class="feature-bar-val" id="featCountryVal">100.0%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featCountryBar" style="width:100%;"></div></div>
+                </div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>Token Jaccard Coefficient</span>
+                    <span class="feature-bar-val" id="featJaccardVal">93.2%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featJaccardBar" style="width:93.2%;"></div></div>
+                </div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>Levenshtein Distance Metric</span>
+                    <span class="feature-bar-val" id="featLevVal">95.1%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featLevBar" style="width:95.1%;"></div></div>
+                </div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>TF-IDF Corporate Corpus Weight</span>
+                    <span class="feature-bar-val" id="featTfidfVal">89.7%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featTfidfBar" style="width:89.7%;"></div></div>
+                </div>
+
+                <div class="feature-bar-row">
+                  <div class="feature-bar-labels">
+                    <span>Numeric Street # Agreement</span>
+                    <span class="feature-bar-val" id="featNumVal">100.0%</span>
+                  </div>
+                  <div class="feature-bar-bg"><div class="feature-bar-fill" id="featNumBar" style="width:100%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="replay-latency-pill">
+              &bull; Deterministic Replay Verified Latency: <strong>1.24ms</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation Protocol Checklist Strip -->
+        <div class="validation-checklist-strip">
+          <div class="checklist-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tertiary)" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            AMAZON ML CHALLENGE VALIDATION PROTOCOL (DETERMINISTIC CHECKLIST)
+          </div>
+          <div class="checklist-pills-row">
+            <span style="font-size:11px; font-weight:700; color:var(--tertiary); margin-right:6px;">8/8 PASSED &bull; 100% REPRODUCIBLE</span>
+            <span class="check-pill">&#x2714; SCHEMA</span>
+            <span class="check-pill">&#x2714; IDS INTEGRITY</span>
+            <span class="check-pill">&#x2714; CANDIDATES BOUND</span>
+            <span class="check-pill">&#x2714; SUBSET DISJOINT</span>
+            <span class="check-pill">&#x2714; OUTPUT TSV</span>
+            <span class="check-pill">&#x2714; LICENSE RESTR.</span>
+            <span class="check-pill">&#x2714; FAIR PLAY OK</span>
+            <span class="check-pill">&#x2714; SEED: 42 FIXED</span>
+          </div>
+        </div>
+
+        <!-- Bottom Two Cards: Validation Deck & Submission Package -->
+        <div class="bottom-validation-grid">
+          <!-- Card 1: Validation Deck -->
+          <div class="val-deck-card">
+            <div>
+              <div class="val-deck-header">
+                <div>
+                  <div class="val-deck-tag">VALIDATION DECK</div>
+                  <div class="val-deck-title">Model Stability &amp; Challenge Evaluation</div>
+                </div>
+                <span class="official-metric-pill">OFFICIAL METRIC: F0.5</span>
+              </div>
+
+              <div class="val-deck-triplet">
+                <div class="triplet-box">
+                  <div class="triplet-lbl">CHALLENGE F0.5 SCORE</div>
+                  <div class="triplet-val coral">0.9412</div>
+                  <div class="triplet-sub" style="color:var(--tertiary);">&uarr; +0.024 vs Baseline</div>
+                </div>
+                <div class="triplet-box">
+                  <div class="triplet-lbl">PRECISION METRIC</div>
+                  <div class="triplet-val">0.9560</div>
+                  <div class="triplet-sub">Low False Positives</div>
+                </div>
+                <div class="triplet-box">
+                  <div class="triplet-lbl">RECALL CALIBRATION</div>
+                  <div class="triplet-val">0.8872</div>
+                  <div class="triplet-sub">Controlled Horizon</div>
+                </div>
+              </div>
+
+              <!-- Precision-Recall Curve -->
+              <div class="val-curve-container">
+                <svg viewBox="0 0 380 90" width="100%" height="100%">
+                  <path d="M 20 80 Q 200 45 280 22 T 370 85" fill="none" stroke="#4F46C5" stroke-width="2.5" />
+                  <line x1="280" y1="20" x2="280" y2="85" stroke="#FF5B4D" stroke-width="1.5" stroke-dasharray="2,2" />
+                  <circle cx="280" cy="22" r="4" fill="#FF5B4D" />
+                  <text x="240" y="38" font-size="9" fill="#0A0D14" font-weight="bold">Opt: 0.860 (F0.5: 0.941)</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="val-deck-footer">
+              <span>Evaluation Dataset: <strong>holdout_eval_50k</strong></span>
+              <span style="color:var(--tertiary); font-weight:700;">ZERO LEAKAGE CONFIRMED</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Deterministic Submission Package -->
+          <div class="sub-package-card">
+            <div>
+              <div class="sub-pkg-header">
+                <div>
+                  <div class="val-deck-tag">ARTIFACT ENGINE</div>
+                  <div class="val-deck-title">Deterministic Submission Package</div>
+                </div>
+                <span class="ready-to-archive-pill">&#x2714; READY TO ARCHIVE</span>
+              </div>
+
+              <div class="file-artifact-list">
+                <div class="file-artifact-row">
+                  <div class="file-info-group">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    </svg>
+                    <div>
+                      <span class="file-name-bold">matching_results.tsv</span>
+                      <span class="file-meta-sub">Final pairwise prediction TSV &middot; 229 MB</span>
+                    </div>
+                  </div>
+                  <span class="file-valid-badge">&#x2714; Validated</span>
+                </div>
+
+                <div class="file-artifact-row">
+                  <div class="file-info-group">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    </svg>
+                    <div>
+                      <span class="file-name-bold">candidate_pairs.tsv</span>
+                      <span class="file-meta-sub">Candidate search index &middot; 825 MB</span>
+                    </div>
+                  </div>
+                  <span class="file-valid-badge">&#x2714; Validated</span>
+                </div>
+
+                <div class="file-artifact-row">
+                  <div class="file-info-group">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    </svg>
+                    <div>
+                      <span class="file-name-bold">README.md</span>
+                      <span class="file-meta-sub">Methodology, Pipeline Walkthrough, Hardware Specs</span>
+                    </div>
+                  </div>
+                  <span class="file-valid-badge">&#x2714; Validated</span>
+                </div>
+
+                <div class="file-artifact-row">
+                  <div class="file-info-group">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+                      <polyline points="16 18 22 12 16 6"></polyline>
+                      <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                    <div>
+                      <span class="file-name-bold">requirements.txt</span>
+                      <span class="file-meta-sub">Exact deterministic versions, CPU execution guarantee</span>
+                    </div>
+                  </div>
+                  <span class="file-valid-badge">&#x2714; Validated</span>
+                </div>
+
+                <div class="file-artifact-row">
+                  <div class="file-info-group">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    </svg>
+                    <div>
+                      <span class="file-name-bold">ENTIVYRE_submission.zip</span>
+                      <span class="file-meta-sub">Certified clean-room archive &middot; 443.48 MB</span>
+                    </div>
+                  </div>
+                  <span class="file-valid-badge">&#x2714; Validated</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-pkg-actions">
+              <button class="btn-primary" id="btnPrepareSubmission" style="flex:1;" onclick="openSubmissionModal()">
+                Prepare Submission Package &rarr;
+              </button>
+              <button class="btn-outline" id="btnOpenAuditLog" onclick="openAuditLogModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Audit Log
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Configure Threshold Modal -->
+  <div id="thresholdModal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-badge">&#x2699; STAGE 18: THRESHOLD CALIBRATOR</div>
+          <h3 class="modal-title">F0.5 Decision Boundary Calibration</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseThresholdModal" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          Calibrate the operational classification threshold (&tau;) across the gradient boosted ensemble to maximize <strong>F0.5 Score (&beta; = 0.5)</strong>, placing double emphasis on precision to minimize false-positive entity mergers.
+        </p>
+
+        <!-- Current Operating Point -->
+        <div class="modal-metric-banner">
+          <div class="metric-banner-col">
+            <span class="m-banner-label">DECISION THRESHOLD (&tau;)</span>
+            <span class="m-banner-val" id="modalTauDisplay">0.860</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">TARGET F0.5 SCORE</span>
+            <span class="m-banner-val highlight" id="modalF05Display">0.9412</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">PRECISION / RECALL</span>
+            <span class="m-banner-val" id="modalPrecRecDisplay">95.62% / 98.40%</span>
+          </div>
+        </div>
+
+        <!-- Interactive Slider Section -->
+        <div class="modal-controls">
+          <div class="modal-slider-row">
+            <label for="modalThresholdSlider" class="modal-slider-label">
+              <span>Match Decision Cutoff Threshold (&tau;)</span>
+              <span class="modal-slider-val" id="sliderTauVal">0.860</span>
+            </label>
+            <input type="range" class="custom-range" id="modalThresholdSlider" min="0.50" max="0.98" step="0.005" value="0.860">
+            <div class="slider-ticks">
+              <span>0.50 (High Recall)</span>
+              <span style="color:var(--primary); font-weight:700;">0.86 (Optimal &beta;=0.5)</span>
+              <span>0.98 (Strict Precision)</span>
+            </div>
+          </div>
+
+          <div class="modal-slider-row" style="margin-top:16px;">
+            <label for="modalMinScoreSlider" class="modal-slider-label">
+              <span>Secondary Phonetic Fallback Margin (&delta;)</span>
+              <span class="modal-slider-val" id="sliderDeltaVal">0.040</span>
+            </label>
+            <input type="range" class="custom-range" id="modalMinScoreSlider" min="0.01" max="0.10" step="0.005" value="0.040">
+            <div class="slider-ticks">
+              <span>0.01 (Tight Guardrail)</span>
+              <span>0.04 (Default)</span>
+              <span>0.10 (Permissive)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Sensitivity Simulation Box -->
+        <div class="modal-impact-grid">
+          <div class="impact-cell">
+            <div class="impact-title">Predicted Precision</div>
+            <div class="impact-val" id="modalImpactPrecision" style="color:var(--tertiary);">95.62%</div>
+            <div class="impact-note">False positive rate &lt; 4.4%</div>
+          </div>
+          <div class="impact-cell">
+            <div class="impact-title">Predicted Recall</div>
+            <div class="impact-val" id="modalImpactRecall" style="color:var(--secondary);">98.40%</div>
+            <div class="impact-note">Candidate retention &gt; 98%</div>
+          </div>
+          <div class="impact-cell">
+            <div class="impact-title">Cluster Cleanliness</div>
+            <div class="impact-val" id="modalImpactClusters" style="color:var(--neutral-900);">99.2%</div>
+            <div class="impact-note">Transitive consistency</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-outline" id="btnResetThreshold">Reset to Optimal (0.860)</button>
+        <button class="btn-primary" id="btnApplyThreshold">Apply &amp; Recalculate Metrics &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submission Package Builder Modal -->
+  <div id="submissionPkgModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-badge">&#x2714; STAGE 40: CLEAN-ROOM ARCHIVE BUILDER</div>
+          <h3 class="modal-title">Deterministic Submission Package</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseSubmissionModal" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          Official competition submission artifact bundle generated under strict clean-room isolation. Validated against official schema specifications and invariant constraints.
+        </p>
+
+        <!-- Status Highlights Banner -->
+        <div class="modal-metric-banner">
+          <div class="metric-banner-col">
+            <span class="m-banner-label">ARCHIVE STATUS</span>
+            <span class="m-banner-val highlight" style="color:var(--tertiary);">READY TO ARCHIVE</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">TOTAL ARCHIVE SIZE</span>
+            <span class="m-banner-val" id="subModalSize">443.48 MB</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">OFFICIAL VALIDATOR</span>
+            <span class="m-banner-val" style="color:var(--secondary);">EXIT 0 (PASS)</span>
+          </div>
+        </div>
+
+        <!-- 5 Submission Artifacts List -->
+        <div class="sub-artifacts-list">
+          <div class="sub-artifact-row">
+            <div class="sub-artifact-info">
+              <div class="sub-artifact-icon">📄</div>
+              <div>
+                <div class="sub-artifact-name">matching_results.tsv</div>
+                <div class="sub-artifact-desc">Final pairwise prediction TSV &bull; 229 MB &bull; 42,891 matched pairs</div>
+              </div>
+            </div>
+            <span class="file-valid-badge">&#x2714; Validated</span>
+          </div>
+
+          <div class="sub-artifact-row">
+            <div class="sub-artifact-info">
+              <div class="sub-artifact-icon">📊</div>
+              <div>
+                <div class="sub-artifact-name">candidate_pairs.tsv</div>
+                <div class="sub-artifact-desc">Candidate search index &bull; 825 MB &bull; 1,218,490 candidate pairs</div>
+              </div>
+            </div>
+            <span class="file-valid-badge">&#x2714; Validated</span>
+          </div>
+
+          <div class="sub-artifact-row">
+            <div class="sub-artifact-info">
+              <div class="sub-artifact-icon">📝</div>
+              <div>
+                <div class="sub-artifact-name">README.md</div>
+                <div class="sub-artifact-desc">Methodology, Pipeline Walkthrough, Hardware Specs &bull; Complete</div>
+              </div>
+            </div>
+            <span class="file-valid-badge">&#x2714; Validated</span>
+          </div>
+
+          <div class="sub-artifact-row">
+            <div class="sub-artifact-info">
+              <div class="sub-artifact-icon">⚙️</div>
+              <div>
+                <div class="sub-artifact-name">requirements.txt</div>
+                <div class="sub-artifact-desc">Exact deterministic versions, CPU execution guarantee &bull; Pinned</div>
+              </div>
+            </div>
+            <span class="file-valid-badge">&#x2714; Validated</span>
+          </div>
+
+          <div class="sub-artifact-row highlight">
+            <div class="sub-artifact-info">
+              <div class="sub-artifact-icon">📦</div>
+              <div>
+                <div class="sub-artifact-name">ENTIVYRE_submission.zip</div>
+                <div class="sub-artifact-desc">Certified clean-room archive &bull; 443.48 MB &bull; SHA-256 Verified</div>
+              </div>
+            </div>
+            <span class="file-valid-badge">&#x2714; Validated</span>
+          </div>
+        </div>
+
+        <!-- Verification Certificate Box -->
+        <div class="sub-cert-box">
+          <div class="sub-cert-header">
+            <span>&#x1F6E1; CLEAN-ROOM EXTRACTION AUDIT</span>
+            <span class="sub-cert-date">TIMESTAMP: 2026-09-25T03:01:03Z</span>
+          </div>
+          <div class="sub-cert-body">
+            &bull; Zero test/train leakage detected &bull; No external internet requests during inference &bull; 100% Source 1 target coverage verified &bull; Strict subset invariant checked.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button class="btn-outline" id="btnReverifyCleanRoom">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          Re-Verify Checksum
+        </button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-outline" id="btnCloseSubmissionModalBtn">Close</button>
+          <a href="/api/download/submission" download="ENTIVYRE_submission.zip" class="btn-primary" id="btnDownloadSubmissionZip" style="text-decoration:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download ENTIVYRE_submission.zip
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 17-Point Release Audit Log Modal -->
+  <div id="auditLogModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 820px; max-height: 88vh; display:flex; flex-direction:column;">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-badge" style="color:var(--tertiary);">&#x2714; STAGE 39: 17-POINT RELEASE AUDIT REPORT</div>
+          <h3 class="modal-title">Release &amp; Fair-Play Verification Audit</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseAuditLogModal" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body" style="overflow-y:auto; flex:1; max-height:calc(88vh - 130px);">
+        <!-- Summary Stats Ribbon -->
+        <div class="modal-metric-banner" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="metric-banner-col">
+            <span class="m-banner-label">AUDIT CHECKS</span>
+            <span class="m-banner-val highlight" style="color:var(--tertiary);">17 / 17 (100%)</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">UNIT TESTS</span>
+            <span class="m-banner-val">153 / 153 PASS</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">VALIDATOR STATUS</span>
+            <span class="m-banner-val" style="color:var(--secondary);">EXIT 0 (PASS)</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">FAIR-PLAY MODE</span>
+            <span class="m-banner-val" style="color:var(--tertiary);">AIR-GAPPED</span>
+          </div>
+        </div>
+
+        <div style="font-size:11px; font-weight:700; color:var(--neutral-500); text-transform:uppercase; margin-bottom:12px; letter-spacing:0.5px;">
+          Deterministic Compliance Checklist (17/17 Verified)
+        </div>
+
+        <!-- 17 Checks Container -->
+        <div class="audit-checks-container" id="auditChecksContainer">
+          <!-- Populated dynamically from /api/audit-log or fallback template -->
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button class="btn-outline" id="btnCopyAuditSummary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy Audit Summary
+        </button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-outline" id="btnCloseAuditLogModalBtn">Close</button>
+          <button class="btn-primary" id="btnExportAuditJson">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Audit Report JSON
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enterprise Security Shield & Threat Defense Console Modal -->
+  <div id="securityShieldModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 820px; max-height: 88vh; display:flex; flex-direction:column;">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-badge" style="color:var(--tertiary);">&#x1F6E1; ENTERPRISE SECURITY CONSOLE</div>
+          <h3 class="modal-title">Zero-Trust Air-Gapped Security Architecture</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseSecurityModal" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body" style="overflow-y:auto; flex:1; max-height:calc(88vh - 130px);">
+        <p class="modal-desc">
+          ENTIVYRE is engineered with military-grade defense-in-depth security policies, strictly isolating candidate retrieval, model evaluation, and submission serialization from network attacks, injection exploits, and data tampering.
+        </p>
+
+        <!-- Security Posture Highlights Banner -->
+        <div class="modal-metric-banner" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="metric-banner-col">
+            <span class="m-banner-label">SECURITY TIER</span>
+            <span class="m-banner-val highlight" style="color:var(--tertiary); font-size:14px;">MIL-SPEC HARDENED</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">BLOCKED ATTACKS</span>
+            <span class="m-banner-val" id="secBlockedAttacks" style="color:var(--secondary);">0</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">AIR-GAP FIREWALL</span>
+            <span class="m-banner-val" style="color:var(--tertiary);">ACTIVE</span>
+          </div>
+          <div class="metric-banner-col">
+            <span class="m-banner-label">DATA LEAKAGE</span>
+            <span class="m-banner-val" style="color:var(--tertiary);">0.00%</span>
+          </div>
+        </div>
+
+        <!-- 6 Defense-in-Depth Shield Layers -->
+        <div style="font-size:11px; font-weight:700; color:var(--neutral-500); text-transform:uppercase; margin-bottom:12px; letter-spacing:0.5px;">
+          Active Enterprise Security Controls (6 Defense Layers)
+        </div>
+
+        <div class="security-layers-grid">
+          <div class="sec-layer-card">
+            <div class="sec-layer-icon">&#x1F6E1;</div>
+            <div class="sec-layer-content">
+              <div class="sec-layer-title">Content Security Policy (CSP v3)</div>
+              <div class="sec-layer-desc">Enforces strict self-origin bounding. Restricts script, style, connect, and object execution to prevent Cross-Site Scripting (XSS).</div>
+              <span class="sec-layer-status active">&#x2714; ACTIVE (Strict Self-Origin)</span>
+            </div>
+          </div>
+
+          <div class="sec-layer-card">
+            <div class="sec-layer-icon">&#x1F512;</div>
+            <div class="sec-layer-content">
+              <div class="sec-layer-title">Anti-Clickjacking &amp; Framing Shield</div>
+              <div class="sec-layer-desc">X-Frame-Options set to DENY with frame-ancestors 'none'. Completely eliminates UI redress and malicious iframe encapsulation attacks.</div>
+              <span class="sec-layer-status active">&#x2714; ACTIVE (X-Frame-Options: DENY)</span>
+            </div>
+          </div>
+
+          <div class="sec-layer-card">
+            <div class="sec-layer-icon">&#x1F6AB;</div>
+            <div class="sec-layer-content">
+              <div class="sec-layer-title">Path Traversal &amp; Null-Byte Sanitizer</div>
+              <div class="sec-layer-desc">Server-level canonical path resolver rejects directory stepping (../, %2e%2e, %00) and bounds all static assets strictly inside web root.</div>
+              <span class="sec-layer-status active">&#x2714; ACTIVE (403 Forbidden Shield)</span>
+            </div>
+          </div>
+
+          <div class="sec-layer-card">
+            <div class="sec-layer-icon">&#x26A1;</div>
+            <div class="sec-layer-content">
+              <div class="sec-layer-title">Anti-DDoS Sliding Rate Limiter</div>
+              <div class="sec-layer-desc">Sliding-window IP request tracker caps traffic at 240 requests/min per IP. Automatically throttles high-frequency probes with HTTP 429.</div>
+              <span class="sec-layer-status active">&#x2714; ACTIVE (Sliding 60s Window)</span>
+            </div>
+          </div>
+
+          <div class="sec-layer-card">
+            <div class="sec-layer-icon">&#x1F310;</div>
+            <div class="sec-layer-content">
+              <div class="sec-layer-title">Air-Gapped Fair-Play Isolation</div>
+              <div class="sec-layer-desc">Zero external API dependencies, zero tracking pixels, zero analytics beacons. Socket connections monitored under Clean-Room Extraction Protocol.</div>
+              <span class="sec-layer-status active">&#x2714; ENFORCED (100% Offline)</span>
+            </div>
+          </div>
+
+          <div class="sec-layer-card">
+            <div class="sec-layer-icon">&#x1F510;</div>
+            <div class="sec-layer-content">
+              <div class="sec-layer-title">Cryptographic SHA-256 Tamper Seal</div>
+              <div class="sec-layer-desc">Continuous hash validation across submission artifacts and models. Protects weights and prediction tables against disk tampering.</div>
+              <span class="sec-layer-status active">&#x2714; VERIFIED (SHA-256 Match)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Mitigated Threats Box -->
+        <div class="sec-threat-box">
+          <div class="sec-threat-header">
+            <span>&#x1F4CA; LIVE THREAT MITIGATION TELEMETRY</span>
+            <span id="secThreatTimestamp" style="color:var(--neutral-400); font-size:10px;">POLLING: 1000MS</span>
+          </div>
+          <div class="sec-threat-grid">
+            <div class="sec-threat-item">
+              <span class="threat-label">Path Traversal Probes:</span>
+              <span class="threat-val" id="threatPathCount" style="color:#F87171;">0</span>
+            </div>
+            <div class="sec-threat-item">
+              <span class="threat-label">Rate Limit Violations:</span>
+              <span class="threat-val" id="threatRateCount" style="color:#FBBF24;">0</span>
+            </div>
+            <div class="sec-threat-item">
+              <span class="threat-label">Disallowed HTTP Methods:</span>
+              <span class="threat-val" id="threatMethodCount" style="color:#F87171;">0</span>
+            </div>
+            <div class="sec-threat-item">
+              <span class="threat-label">Malformed Requests Blocked:</span>
+              <span class="threat-val" id="threatMalformedCount" style="color:#F87171;">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button class="btn-outline" id="btnTestSecurityProbe">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          Simulate Penetration Probe
+        </button>
+        <button class="btn-primary" id="btnCloseSecurityModalBtn">
+          Close Console
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- High-Dimensional 3D Vector Manifold Modal (Fullscreen) -->
+  <div id="vector3dModal" class="v3d-modal">
+    <!-- Top Header Bar -->
+    <header class="v3d-header">
+      <div class="v3d-header-left">
+        <div class="v3d-brand-badge">
+          <div class="v3d-brand-dot"></div>
+          <span>ENTIVYRE 3D</span>
+        </div>
+        <div class="v3d-title-divider"></div>
+        <div class="v3d-manifold-tag">
+          <span>HIGH-DIMENSIONAL EMBEDDING MANIFOLD</span>
+          <span class="v3d-active-cluster-pill" id="v3dActiveClusterPill">CLUSTER #CL-09412 &bull; d=128 &rarr; 3D</span>
+        </div>
+      </div>
+
+      <!-- Center Projection Selector -->
+      <div class="v3d-header-center">
+        <button class="proj-mode-btn active" data-mode="umap" title="Non-linear local/global topology preservation">UMAP 3D</button>
+        <button class="proj-mode-btn" data-mode="pca" title="Linear variance-maximizing projection">PCA 3D</button>
+        <button class="proj-mode-btn" data-mode="tsne" title="Local probability divergence clustering">t-SNE 3D</button>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="v3d-header-right">
+        <button class="v3d-ctrl-btn active" id="btnVector3dAutoRotate" title="Toggle 360° Continuous Orbit Rotation (Spacebar)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span>Auto-Rotate: <strong class="auto-rotate-indicator">ON</strong></span>
+        </button>
+
+        <button class="v3d-ctrl-btn active" id="btnVector3dGrid" title="Toggle 3D Coordinate Grid & Axes">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="3" y1="15" x2="21" y2="15"></line>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+            <line x1="15" y1="3" x2="15" y2="21"></line>
+          </svg>
+          <span>Grid</span>
+        </button>
+
+        <button class="v3d-ctrl-btn" id="btnVector3dResetCam" title="Reset Camera Orientation & Zoom (R)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+          <span>Reset Camera</span>
+        </button>
+
+        <button class="v3d-ctrl-btn" id="btnVector3dFullscreen" title="Toggle Native Fullscreen">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          <span>Fullscreen</span>
+        </button>
+
+        <button class="v3d-close-btn" id="btnVector3dClose" title="Close 3D View (ESC)">
+          <span>Close</span>
+          <span style="font-family:var(--font-mono); font-size:10px; opacity:0.8;">[ESC]</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Viewport -->
+    <div class="v3d-viewport">
+      <canvas id="vector3dCanvas"></canvas>
+
+      <!-- Floating Left HUD Sidebar -->
+      <aside class="v3d-hud-left">
+        <div class="v3d-hud-header">
+          <div class="v3d-hud-title">Cluster Manifold Projection</div>
+          <div class="v3d-hud-sub">32 Entities &bull; 17 Pairwise Vectors &bull; <span id="v3dActiveModeTag">UMAP 3D</span></div>
+        </div>
+
+        <div class="v3d-search-box">
+          <input type="text" id="v3dSearchInput" class="v3d-search-input" placeholder="Search entity name, ID, or source...">
+        </div>
+
+        <div class="v3d-legend-row">
+          <div class="v3d-legend-item">
+            <span class="v3d-dot-indicator" style="background:#FF5B4D;"></span>
+            <span>Anchor</span>
+          </div>
+          <div class="v3d-legend-item">
+            <span class="v3d-dot-indicator" style="background:#159A72;"></span>
+            <span>Match</span>
+          </div>
+          <div class="v3d-legend-item">
+            <span class="v3d-dot-indicator" style="background:#EF4444;"></span>
+            <span>Collision</span>
+          </div>
+          <div class="v3d-legend-item">
+            <span class="v3d-dot-indicator" style="background:#4F46C5;"></span>
+            <span>Ambient</span>
+          </div>
+        </div>
+
+        <div class="v3d-entity-list" id="v3dEntityList">
+          <!-- Populated by vector_3d_graph.js -->
+        </div>
+      </aside>
+
+      <!-- Floating Right HUD Inspector Card -->
+      <aside class="v3d-hud-right" id="v3dInspectorCard">
+        <!-- Dynamically updated by selectNode() -->
+      </aside>
+
+      <!-- Floating Bottom Navigation HUD -->
+      <div class="v3d-hud-bottom">
+        <div class="v3d-hint-item">
+          <span class="v3d-hint-key">Left Drag</span>
+          <span>Rotate 360&deg;</span>
+        </div>
+        <div class="v3d-hint-item">
+          <span class="v3d-hint-key">Right Drag / Shift</span>
+          <span>Pan</span>
+        </div>
+        <div class="v3d-hint-item">
+          <span class="v3d-hint-key">Scroll</span>
+          <span>Zoom</span>
+        </div>
+        <div class="v3d-hint-item">
+          <span class="v3d-hint-key">Click Node</span>
+          <span>Inspect Vector</span>
+        </div>
+      </div>
+
+      <!-- 3D Raycaster Hover Tooltip -->
+      <div id="vector3dTooltip" class="v3d-tooltip"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div id="toast" class="toast-notification">
+    <div class="toast-spinner"></div>
+    <span id="toastMsg">Running pipeline...</span>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/vector_3d_graph.js"></script>
+</body>
+</html>

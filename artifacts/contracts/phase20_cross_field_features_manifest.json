@@ -1,0 +1,24 @@
+{
+  "phase": "20_cross_field_features",
+  "status": "COMPLETED",
+  "engine_module": "ber.features.cross_field",
+  "pipeline_module": "ber.features.pipeline",
+  "classes": [
+    "FeatureExtractionPipeline"
+  ],
+  "functions": [
+    "extract_cross_field_features"
+  ],
+  "tests_passed": 115,
+  "features_verified": [
+    "name_and_address_high_sim",
+    "name_high_address_contradiction",
+    "name_exact_diff_country",
+    "overall_composite_similarity"
+  ],
+  "pipeline_coverage": {
+    "total_registry_features": 33,
+    "vector_length": 33,
+    "imputation_guaranteed": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "phase": "29_ablation_experiments",
+  "status": "COMPLETED",
+  "experiments_module": "ber.experiments.ablation_engine",
+  "classes": [
+    "AblationEngine",
+    "AblationExperimentResult"
+  ],
+  "tests_passed": 131,
+  "canonical_ablations": [
+    "FULL_SYSTEM",
+    "MINUS_ADDRESS_FEATURES",
+    "MINUS_NUMERIC_CONTRADICTION_GUARD",
+    "MINUS_COUNTRY_CONTRADICTION_GUARD",
+    "MINUS_TFIDF_RETRIEVAL_PASS"
+  ],
+  "provenance_tracking": {
+    "run_id": true,
+    "delta_metric": "delta_macro_f05",
+    "export_formats": ["JSON", "Markdown"]
+  }
+}

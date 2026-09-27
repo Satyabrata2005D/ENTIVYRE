@@ -1,0 +1,25 @@
+{
+  "phase": "07_business_name_normalization",
+  "status": "PASS",
+  "timestamp": "2026-09-25T01:26:55Z",
+  "modules": [
+    "ber.normalization.name_normalizer",
+    "ber.normalization.transliteration"
+  ],
+  "capabilities": {
+    "representations": ["RAW", "CLEAN", "CANONICAL", "TOKENS", "TOKENS_SORTED", "CHAR_NGRAMS"],
+    "zero_mutation_guarantee": true,
+    "legal_suffix_canonicalization": true,
+    "word_order_invariance": true,
+    "devanagari_transliteration": true,
+    "url_and_phone_noise_stripping": true,
+    "accent_decomposition": true
+  },
+  "tests": {
+    "test_file": "tests/test_name_normalizer.py",
+    "tests_run": 8,
+    "tests_passed": 8,
+    "total_suite_tests": 53,
+    "total_suite_passed": 53
+  }
+}

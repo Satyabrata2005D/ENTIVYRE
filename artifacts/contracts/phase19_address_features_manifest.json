@@ -1,0 +1,21 @@
+{
+  "phase": "19_address_specific_features",
+  "status": "COMPLETED",
+  "engine_module": "ber.features.address_features",
+  "functions": [
+    "extract_address_features"
+  ],
+  "tests_passed": 110,
+  "features_verified": [
+    "address_exact_match",
+    "address_clean_exact_match",
+    "address_canonical_exact_match",
+    "address_token_jaccard",
+    "address_token_overlap_count",
+    "address_levenshtein_sim",
+    "address_numeric_jaccard",
+    "address_numeric_contradiction",
+    "address_postal_code_match",
+    "address_is_missing"
+  ]
+}

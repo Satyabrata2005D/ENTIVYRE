@@ -1,0 +1,19 @@
+{
+  "phase": "26_singleton_handling",
+  "status": "COMPLETED",
+  "decision_module": "ber.decision.matcher",
+  "classes": [
+    "EntityMatcher"
+  ],
+  "tests_passed": 129,
+  "singleton_rules": [
+    "NO_CANDIDATE_FALLBACK",
+    "LOW_CONFIDENCE_THRESHOLD_FLOOR",
+    "COUNTRY_CONTRADICTION_REJECTION",
+    "ADDRESS_NUMERIC_CONTRADICTION_REJECTION"
+  ],
+  "metric_guarantee": {
+    "singleton_credit": 1.0,
+    "false_merge_penalty": 0.0
+  }
+}

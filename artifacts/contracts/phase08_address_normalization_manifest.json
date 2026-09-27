@@ -1,0 +1,27 @@
+{
+  "phase": "08_address_normalization",
+  "status": "COMPLETED",
+  "engine_module": "ber.normalization.address_normalizer",
+  "classes": [
+    "AddressNormalizer",
+    "NormalizedAddress"
+  ],
+  "functions": [
+    "compare_numeric_evidence"
+  ],
+  "tests_passed": 58,
+  "features_verified": [
+    "multi_tier_representations (raw, clean, canonical, tokens, tokens_sorted, numeric_tokens)",
+    "zero_raw_mutation",
+    "thoroughfare_abbreviations (st, rd, ave, blvd, ln, dr, etc.)",
+    "sub_unit_abbreviations (ste, apt, fl, bldg, etc.)",
+    "indian_municipal_and_landmarks (nagar, marg, sector, opp, nr, bazaar, etc.)",
+    "french_address_handling (rue, chemin, allee)",
+    "postal_code_extraction (5-digit US/FR, 6-digit Indian PIN)",
+    "numeric_token_isolation_and_comparison",
+    "numeric_contradiction_detection (disjoint numbers indicate distinct entities)"
+  ],
+  "dependencies": [
+    "ber.normalization.transliteration"
+  ]
+}

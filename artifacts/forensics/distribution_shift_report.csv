@@ -1,0 +1,7 @@
+split,source,total_records,country_us_pct,country_india_pct,country_france_pct,country_other_pct,missing_address_pct,missing_country_pct,name_len_mean,name_len_median,name_len_p95,addr_len_mean,addr_len_median,addr_len_p95,has_url_name_pct,has_legal_suffix_pct,non_ascii_name_pct,name_1_word_pct,name_2_words_pct,name_3plus_words_pct,addr_has_digits_pct,addr_has_postal_code_pct,duplicate_name_rate_sample
+train,source1,2206821,59.98%,40.02%,0.00%,0.00%,0.00%,0.00%,24.0,24,37,52.1,41,103,0.00%,38.70%,0.00%,0.70%,14.00%,85.31%,96.51%,6.67%,19.70%
+train,source2,5034616,59.92%,40.08%,0.00%,0.00%,3.36%,0.00%,25.1,25,40,46.2,37,96,4.00%,35.70%,15.19%,6.20%,14.46%,79.34%,93.79%,7.59%,4.64%
+train,source3,5285603,59.98%,40.02%,0.00%,0.00%,3.33%,0.00%,25.2,25,42,46.7,42,91,3.99%,36.27%,11.48%,7.50%,14.15%,78.35%,93.93%,7.55%,3.93%
+test,source1,1732544,38.27%,46.75%,14.98%,0.00%,0.00%,0.00%,23.8,24,36,57.2,50,105,0.00%,34.85%,2.35%,0.45%,12.54%,87.01%,95.85%,4.37%,20.29%
+test,source2,4887273,38.29%,47.32%,14.39%,0.00%,2.65%,0.00%,25.7,25,42,50.4,43,99,3.19%,33.09%,18.99%,4.99%,11.95%,83.06%,95.19%,5.21%,4.27%
+test,source3,5082316,38.28%,47.32%,14.40%,0.00%,2.68%,0.00%,25.7,25,42,48.7,43,94,3.23%,33.86%,14.51%,6.29%,11.83%,81.88%,95.04%,5.18%,3.58%

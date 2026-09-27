@@ -1,0 +1,18 @@
+{
+  "phase": "22_supervised_pair_dataset",
+  "status": "COMPLETED",
+  "data_module": "ber.data.pair_dataset",
+  "classes": [
+    "PairDatasetGenerator",
+    "LabeledPair",
+    "DatasetSummary"
+  ],
+  "tests_passed": 123,
+  "sampling_spec": {
+    "positive_label": 1.0,
+    "negative_label": 0.0,
+    "max_negatives_per_positive_default": 5,
+    "feature_dimensions": 33,
+    "deterministic_hash_sampling": true
+  }
+}

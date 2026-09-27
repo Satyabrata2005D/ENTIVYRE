@@ -1,0 +1,19 @@
+{
+  "phase": "11_validation_split",
+  "status": "COMPLETED",
+  "engine_module": "ber.evaluation.splitter",
+  "classes": [
+    "EntityGroupedSplitter",
+    "DatasetSplit",
+    "SplitManifest"
+  ],
+  "tests_passed": 75,
+  "features_verified": [
+    "entity_grouped_disjointness (train_anchors ∩ val_anchors = ∅)",
+    "target_disjointness (train_targets ∩ val_targets = ∅)",
+    "country_stratification (balanced US / India / open-set proportions)",
+    "multiplicity_stratification (balanced singletons, single-match, multi-matches)",
+    "reproducibility (deterministic pseudo-random split via configurable seed)",
+    "persistence_roundtrip (save_split / load_split maintains exact identity sets)"
+  ]
+}

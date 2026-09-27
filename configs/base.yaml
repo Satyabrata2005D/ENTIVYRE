@@ -1,0 +1,89 @@
+# ENTIVYRE Master Base Configuration
+# Deterministic, Air-Gapped, Memory-Aware Business Entity Resolution
+
+project:
+  name: "ENTIVYRE"
+  version: "1.0.0"
+  random_seed: 42
+  airgap_mode: true
+
+paths:
+  dataset_root: "student_resource/dataset"
+  train_dir: "student_resource/dataset/train"
+  test_dir: "student_resource/dataset/test"
+  artifacts_dir: "artifacts"
+  output_dir: "output"
+  logs_dir: "logs"
+
+runtime:
+  chunk_size: 50000
+  max_memory_mb: 8192
+  max_workers: 4
+  stream_buffers: true
+  log_level: "INFO"
+
+contracts:
+  source1_prefix: "S1-"
+  source2_prefix: "S2-"
+  source3_prefix: "S3-"
+  expected_source_cols:
+    - "entity_id"
+    - "business_name"
+    - "business_address"
+    - "country"
+  expected_ground_truth_cols:
+    - "source1_entity_id"
+    - "matched_entity_ids"
+  expected_matching_cols:
+    - "source1_entity_id"
+    - "matched_entity_ids"
+  expected_candidate_cols:
+    - "source1_entity_id"
+    - "candidate_entity_ids"
+
+normalization:
+  unicode_form: "NFKD"
+  lowercase: true
+  strip_accents: true
+  strip_punctuation: true
+  standardize_legal_suffixes: true
+  standardize_address_keywords: true
+  transliterate_devanagari: true
+
+blocking:
+  max_candidates_per_anchor: 50
+  retrieval_strategies:
+    - "exact_name"
+    - "token_jaccard"
+    - "address_postal"
+    - "char_ngram_tfidf"
+  min_ngram: 3
+  max_ngram: 5
+  tfidf_max_features: 100000
+
+features:
+  enabled_groups:
+    - "name_exact"
+    - "name_normalized"
+    - "name_token_jaccard"
+    - "name_levenshtein"
+    - "name_tfidf_cosine"
+    - "address_token_jaccard"
+    - "address_numeric_match"
+    - "country_exact"
+    - "country_compatibility"
+    - "cross_field_joint"
+
+modeling:
+  f_beta: 0.5
+  initial_model: "deterministic_baseline"
+  candidate_model: "logistic_regression"
+  tree_model: "gradient_boosting"
+  threshold_tuning_range: [0.10, 0.90, 0.02]
+  default_threshold: 0.55
+  min_confidence_floor: 0.35
+
+evaluation:
+  metric: "macro_f0.5"
+  singleton_handling: "official_zero_credit"
+  validation_split_ratio: 0.20

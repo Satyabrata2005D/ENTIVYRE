@@ -1,0 +1,17 @@
+{
+  "phase": "25_f05_threshold_optimization",
+  "status": "COMPLETED",
+  "decision_module": "ber.decision.threshold_optimizer",
+  "classes": [
+    "ThresholdOptimizer",
+    "ThresholdOptimizationResult",
+    "ThresholdStepResult"
+  ],
+  "tests_passed": 129,
+  "optimization_objective": {
+    "metric": "Macro F0.5",
+    "precision_weight": 2.0,
+    "candidate_thresholds_count": 12,
+    "entity_grouped_val": true
+  }
+}

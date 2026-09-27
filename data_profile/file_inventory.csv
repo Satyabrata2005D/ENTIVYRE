@@ -1,0 +1,8 @@
+file,path,file_type,size_bytes,size_mb,sampled_rows,estimated_total_rows
+train_source1.tsv,student_resource/dataset/train/train_source1.tsv,TSV,210069713,200.34,100000,2206821
+train_source2.tsv,student_resource/dataset/train/train_source2.tsv,TSV,489301488,466.63,100000,5034616
+train_source3.tsv,student_resource/dataset/train/train_source3.tsv,TSV,503705637,480.37,100000,5285603
+train_ground_truth.tsv,student_resource/dataset/train/train_ground_truth.tsv,TSV,127015583,121.13,100000,2206821
+test_source1.tsv,student_resource/dataset/test/test_source1.tsv,TSV,175022086,166.91,100000,1732544
+test_source2.tsv,student_resource/dataset/test/test_source2.tsv,TSV,509456422,485.86,100000,4887273
+test_source3.tsv,student_resource/dataset/test/test_source3.tsv,TSV,506002772,482.56,100000,5082316

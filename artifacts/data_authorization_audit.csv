@@ -1,0 +1,10 @@
+file,source,provenance,official_challenge_data,derived_from_official_data,external_identity_data,allowed_for_matching,reason
+student_resource/dataset/train/train_source1.tsv,Source 1 (Train Query),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,YES (Training),"Official anchor records for offline training, tuning, and validation."
+student_resource/dataset/train/train_source2.tsv,Source 2 (Train Target),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,YES (Training),Official target database 1 for offline candidate retrieval and blocking calibration.
+student_resource/dataset/train/train_source3.tsv,Source 3 (Train Target),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,YES (Training),Official target database 2 for offline candidate retrieval and blocking calibration.
+student_resource/dataset/train/train_ground_truth.tsv,Ground Truth (Train Labels),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,NO (Labels Only),Official labels strictly quarantined for supervised training and offline validation; never input to test matcher.
+student_resource/dataset/test/test_source1.tsv,Source 1 (Test Anchor Query),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,YES (Test Query),Official test anchor queries for leaderboard inference.
+student_resource/dataset/test/test_source2.tsv,Source 2 (Test Target),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,YES (Test Target),Official test target database 1 for leaderboard candidate retrieval.
+student_resource/dataset/test/test_source3.tsv,Source 3 (Test Target),Amazon ML Challenge 2026 Official Resource,YES,NO,NO,YES (Test Target),Official test target database 2 for leaderboard candidate retrieval.
+output/candidate_pairs.tsv,Candidate Retrieval Output,Derived Artifact from Official Test Sources,NO (Derived),YES,NO,YES (Submission Contract),Official challenge submission artifact; strictly derived via offline multi-pass blocking.
+output/matching_results.tsv,Final Match Output,Derived Artifact from Official Test Sources,NO (Derived),YES,NO,YES (Submission Contract),Official challenge submission artifact; strictly derived via calibrated decision engine.

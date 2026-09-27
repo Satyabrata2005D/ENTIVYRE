@@ -1,0 +1,18 @@
+# ENTIVYRE Full Test Inference Configuration
+# High-throughput, memory-bounded evaluation on test dataset
+
+mode: "inference"
+dataset:
+  s1_file: "student_resource/dataset/test/test_source1.tsv"
+  s2_file: "student_resource/dataset/test/test_source2.tsv"
+  s3_file: "student_resource/dataset/test/test_source3.tsv"
+
+output:
+  matching_results_path: "output/matching_results.tsv"
+  candidate_pairs_path: "output/candidate_pairs.tsv"
+  enforce_strict_tsv: true
+  validate_with_official_script: true
+
+execution:
+  batch_size: 50000
+  write_buffer_rows: 10000

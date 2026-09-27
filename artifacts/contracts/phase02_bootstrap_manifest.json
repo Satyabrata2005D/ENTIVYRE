@@ -1,0 +1,32 @@
+{
+  "phase": "02_repository_bootstrap",
+  "status": "PASS",
+  "timestamp": "2026-09-25T01:15:00Z",
+  "layout": {
+    "configs": "configs/ (base.yaml, validation.yaml, inference.yaml)",
+    "official_code_package": "code/business_entity_resolution/src/ber/",
+    "subpackages": [
+      "io", "validation", "profiling", "normalization", "blocking",
+      "retrieval", "features", "labels", "models", "decision",
+      "evaluation", "outputs", "experiments", "cli", "utils"
+    ],
+    "tests": "code/business_entity_resolution/tests/ and root tests/",
+    "artifacts": "artifacts/ (profiles, normalized, candidates, features, models, evaluations, reports)",
+    "output": "output/",
+    "docs": "docs/ (methodology.md, experiment_log.md, decision_log.md)",
+    "scripts": "scripts/"
+  },
+  "config_manager": {
+    "module": "entivyre.config",
+    "dataclass": "AppConfig",
+    "pure_python_fallback": true,
+    "immutable": true
+  },
+  "tests": {
+    "test_file": "tests/test_bootstrap.py",
+    "tests_run": 7,
+    "tests_passed": 7,
+    "total_suite_tests": 26,
+    "total_suite_passed": 26
+  }
+}

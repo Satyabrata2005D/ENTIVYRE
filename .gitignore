@@ -1,0 +1,73 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# macOS & Editor metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Large Datasets and Submission archives (exceed GitHub size limits)
+student_resource/
+submission/
+output/
+artifacts/temp_inference/
+artifacts/champions/
+artifacts/challengers/
+artifacts/candidates/
+artifacts/features/
+artifacts/models/
+artifacts/normalized/
+
+# Large file formats
+*.zip
+*.tar.gz
+*.pkl
+*.parquet
+*.npy
+*.npz
+*.bin

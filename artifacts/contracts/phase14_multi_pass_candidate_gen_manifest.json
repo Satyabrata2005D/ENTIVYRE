@@ -1,0 +1,22 @@
+{
+  "phase": "14_multi_pass_candidate_generation",
+  "status": "COMPLETED",
+  "engine_module": "ber.blocking.candidate_generator",
+  "classes": [
+    "MultiPassCandidateGenerator",
+    "EnrichedCandidate",
+    "CandidateGenerationAuditMetrics"
+  ],
+  "tests_passed": 89,
+  "features_verified": [
+    "multi_pass_union (standard inverted index + sparse character n-gram TF-IDF)",
+    "provenance_tracking (records retrieval source passes per candidate)",
+    "subword_spelling_rescue (TF-IDF pass rescues variants missed by exact blocking)",
+    "priority_ranking (dual-pass candidates prioritized over single-pass candidates)",
+    "strict_candidate_cap (bounded to max_candidates per anchor)",
+    "zero_self_matches_guarantee",
+    "candidate_deduplication (sets per anchor)",
+    "candidate_pairs_map_generation",
+    "candidate_recall_audit"
+  ]
+}

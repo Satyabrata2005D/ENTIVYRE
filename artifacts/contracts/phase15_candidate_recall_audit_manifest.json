@@ -1,0 +1,20 @@
+{
+  "phase": "15_candidate_recall_audit",
+  "status": "COMPLETED",
+  "engine_module": "ber.blocking.recall_auditor",
+  "classes": [
+    "CandidateRecallAuditor",
+    "RecallAuditReport"
+  ],
+  "tests_passed": 93,
+  "features_verified": [
+    "global_target_recall_calculation (true targets found / total true targets)",
+    "anchor_level_stratified_recall (full, partial, and zero recall anchor rates)",
+    "source_disaggregated_recall (Source 2 vs Source 3 targets)",
+    "country_disaggregated_recall (US, India, open-set)",
+    "singleton_safety (singletons evaluated without diluting matched-entity recall)",
+    "candidate_volume_profiling (mean, median, p90, max)",
+    "reduction_ratio_measurement",
+    "missed_matches_forensic_sampling (captures anchor and missed target IDs for error analysis)"
+  ]
+}

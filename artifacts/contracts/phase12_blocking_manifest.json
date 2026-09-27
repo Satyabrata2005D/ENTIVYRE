@@ -1,0 +1,20 @@
+{
+  "phase": "12_blocking_baseline",
+  "status": "COMPLETED",
+  "engine_module": "ber.blocking.standard_blocker",
+  "classes": [
+    "StandardBlocker",
+    "BlockingRecord",
+    "BlockingAuditMetrics"
+  ],
+  "tests_passed": 80,
+  "features_verified": [
+    "multi_key_generation (NAME_CANON, CTRY_NAME, NAME_SORTED, POSTAL_NAME, NAME_2TOK)",
+    "order_invariance (sorted tokens key matches reordered names)",
+    "postal_evidence_blocking (links postal codes to initial name tokens)",
+    "high_frequency_pruning (caps maximum targets indexed per key to avoid combinatorial blowup)",
+    "candidate_cap_enforcement (strictly bounded to max_candidates_per_anchor)",
+    "no_self_matches_guarantee",
+    "candidate_recall_audit (audits candidates against ground truth targets)"
+  ]
+}

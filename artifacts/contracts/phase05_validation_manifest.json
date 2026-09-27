@@ -1,0 +1,25 @@
+{
+  "phase": "05_schema_and_identifier_validation",
+  "status": "PASS",
+  "timestamp": "2026-09-25T01:24:35Z",
+  "data_validation_report": "artifacts/reports/data_validation_report.json",
+  "total_records_evaluated": 26435994,
+  "overall_valid": true,
+  "invariants": {
+    "train_test_overlap_count": 0,
+    "ground_truth_orphan_targets_count": 0,
+    "ground_truth_s1_coverage_pct": 100.0,
+    "all_source1_entities_have_names": true,
+    "source2_missing_address_pct": 3.3561,
+    "source3_missing_address_pct": 3.3282,
+    "zero_duplicate_ids": true,
+    "strict_id_prefixes": true
+  },
+  "tests": {
+    "test_file": "tests/test_validation.py",
+    "tests_run": 6,
+    "tests_passed": 6,
+    "total_suite_tests": 43,
+    "total_suite_passed": 43
+  }
+}

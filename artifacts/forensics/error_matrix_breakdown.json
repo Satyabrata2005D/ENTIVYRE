@@ -1,0 +1,43 @@
+{
+  "total_evaluation_anchors": 5000,
+  "total_ground_truth_matches": 17250,
+  "matrix_2x2": {
+    "candidate_correct_model_correct (True Positive)": 10764,
+    "candidate_correct_model_wrong (Scoring False Negative)": 753,
+    "candidate_wrong_model_correct (True Negative pool)": 218490,
+    "candidate_wrong_model_wrong_fp (False Positive)": 619,
+    "candidate_wrong_blocking_miss (Retrieval False Negative)": 5733
+  },
+  "failure_modes_quantified": {
+    "1_blocking_miss_fn": {
+      "count": 5733,
+      "pct_of_all_errors": "76.4%",
+      "description": "True match never admitted into candidate set (script transliteration, missing building number, extreme abbreviation)"
+    },
+    "2_threshold_scoring_fn": {
+      "count": 753,
+      "pct_of_all_errors": "10.0%",
+      "description": "True match in candidate pool, but confidence score fell between 0.45 and 0.579 (below tau=0.58)"
+    },
+    "3_model_high_confidence_fp": {
+      "count": 619,
+      "pct_of_all_errors": "8.3%",
+      "description": "Distinct businesses sharing generic name (e.g. 'National Traders') and approximate address/pin"
+    },
+    "4_feature_failure": {
+      "count": 182,
+      "pct_of_all_errors": "2.4%",
+      "description": "Severe token corruption or OCR truncation in building numbers"
+    },
+    "5_singleton_failure_fp": {
+      "count": 145,
+      "pct_of_all_errors": "1.9%",
+      "description": "Anchor has 0 true matches, but model predicted 1 low-confidence candidate, dropping score to 0.0"
+    },
+    "6_multi_match_failure": {
+      "count": 74,
+      "pct_of_all_errors": "1.0%",
+      "description": "Entity has >8 matches and top-8 cap truncated 9th+ valid branch match"
+    }
+  }
+}

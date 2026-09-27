@@ -1,0 +1,22 @@
+{
+  "phase": "21_deterministic_baseline",
+  "status": "COMPLETED",
+  "model_module": "ber.models.deterministic_baseline",
+  "classes": [
+    "DeterministicBaseline",
+    "DecisionResult"
+  ],
+  "tests_passed": 120,
+  "rules_implemented": [
+    "REJECT_COUNTRY_CONTRADICTION",
+    "REJECT_ADDRESS_NUMERIC_CONTRADICTION",
+    "RULE_EXACT_CANONICAL_WITH_COMPATIBLE_ADDRESS",
+    "RULE_NAME_AND_ADDRESS_HIGH_SIM",
+    "RULE_HIGH_COMPOSITE_SCORE"
+  ],
+  "metric_compliance": {
+    "macro_f05": true,
+    "singleton_credit_handled": true,
+    "candidate_subset_enforced": true
+  }
+}

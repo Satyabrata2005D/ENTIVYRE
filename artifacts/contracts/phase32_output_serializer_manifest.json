@@ -1,0 +1,23 @@
+{
+  "phase": "32_output_serializer",
+  "status": "COMPLETED",
+  "serializer_module": "ber.outputs.serializer",
+  "classes": [
+    "OutputSerializer",
+    "OutputValidationReport"
+  ],
+  "tests_passed": 139,
+  "output_contract_guarantees": {
+    "matching_results_filename": "matching_results.tsv",
+    "candidate_pairs_filename": "candidate_pairs.tsv",
+    "strict_tsv_formatting": true,
+    "utf8_encoding_enforced": true,
+    "source1_exact_coverage": true,
+    "no_duplicate_source1_rows": true,
+    "target_sources_strictly_s2_s3": true,
+    "no_self_matches": true,
+    "no_duplicate_target_ids_per_row": true,
+    "candidate_subset_invariant_audited": true,
+    "valid_singleton_empty_string_representation": true
+  }
+}

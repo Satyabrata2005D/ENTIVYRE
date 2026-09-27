@@ -1,0 +1,7 @@
+file,avg_char_length,min_char_length,max_char_length,avg_token_count,min_tokens,max_tokens
+train_source1.tsv,24.04,3,71,3.55,1,12
+train_source2.tsv,25.08,2,104,3.49,1,15
+train_source3.tsv,25.2,2,80,3.53,1,13
+test_source1.tsv,23.83,3,92,3.52,1,13
+test_source2.tsv,25.68,2,74,3.58,1,11
+test_source3.tsv,25.66,2,78,3.6,1,11

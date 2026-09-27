@@ -1,0 +1,18 @@
+{
+  "phase": "27_multi_match_resolution",
+  "status": "COMPLETED",
+  "decision_module": "ber.decision.matcher",
+  "classes": [
+    "EntityMatcher",
+    "MatchPrediction"
+  ],
+  "tests_passed": 129,
+  "multi_match_spec": {
+    "zero_one_many_supported": true,
+    "max_matches_per_anchor": 15,
+    "score_descending_sort": true,
+    "target_deduplication": true,
+    "self_match_prevention": true,
+    "candidate_pairs_subset_enforced": true
+  }
+}

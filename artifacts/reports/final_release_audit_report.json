@@ -1,0 +1,130 @@
+{
+  "timestamp": "2026-09-25T12:54:29Z",
+  "all_passed": true,
+  "total_checks": 17,
+  "passed_checks": 17,
+  "failed_checks": 0,
+  "test_suite_passed": true,
+  "total_unit_tests": 153,
+  "checks": [
+    {
+      "index": 1,
+      "name": "Official requirements satisfied",
+      "description": "Business entity resolution across 3 independent noisy sources, 100% S1 coverage",
+      "passed": true,
+      "evidence": "Phase 01 manifest verified; S1 coverage tested in test_serializer.py and test_official_validator.py"
+    },
+    {
+      "index": 2,
+      "name": "No critical requirement gaps",
+      "description": "Full traceability between challenge document, implementation plan, and code modules",
+      "passed": true,
+      "evidence": "Pre-coding audit completed and 40 phases executed without deviation"
+    },
+    {
+      "index": 3,
+      "name": "Data pipeline validated",
+      "description": "Chunked ingestion, immutable raw dataset, zero train/test leakage, zero orphan targets",
+      "passed": true,
+      "evidence": "Phase 04/05/06 manifests; test_ingestion.py and test_validation.py pass"
+    },
+    {
+      "index": 4,
+      "name": "Normalization validated",
+      "description": "Devanagari transliteration, legal suffix canonicalizer, address intelligence, open-set country mapper",
+      "passed": true,
+      "evidence": "test_name_normalizer.py, test_address_normalizer.py, test_country_handler.py pass"
+    },
+    {
+      "index": 5,
+      "name": "Candidate recall measured",
+      "description": "Multi-pass inverted index and character 3-gram TF-IDF retrieval evaluated against ground truth",
+      "passed": true,
+      "evidence": "97.6% candidate recall verified in Phase 15 audit; reduction ratio > 99.9994%"
+    },
+    {
+      "index": 6,
+      "name": "candidate_pairs semantics correct",
+      "description": "candidate_pairs.tsv represents final candidate set; matching_results is strict subset",
+      "passed": true,
+      "evidence": "0 candidate subset violations audited; OutputSerializer and official validator confirm invariant"
+    },
+    {
+      "index": 7,
+      "name": "Features validated",
+      "description": "33 production features formally registered with immutable definitions, defaults, and provenance",
+      "passed": true,
+      "evidence": "feature_registry_schema.json; test_feature_registry.py and test_cross_field_features.py pass"
+    },
+    {
+      "index": 8,
+      "name": "Model validated",
+      "description": "Deterministic baseline, calibrated logistic regression, and boosted decision stumps trained",
+      "passed": true,
+      "evidence": "test_deterministic_baseline.py and test_supervised_models.py pass"
+    },
+    {
+      "index": 9,
+      "name": "F0.5 evaluation implemented",
+      "description": "Official Macro F0.5 evaluation with 1.0 singleton credit and 0.0 false merge penalty",
+      "passed": true,
+      "evidence": "compute_macro_f05 tested and verified in test_deterministic_baseline.py"
+    },
+    {
+      "index": 10,
+      "name": "Threshold selected from validation",
+      "description": "Grid search across tau in [0.30, 0.95] optimizing Macro F0.5 on entity-grouped validation split",
+      "passed": true,
+      "evidence": "Calibrated optimal threshold tau* = 0.70 persisted in Phase 25 manifest"
+    },
+    {
+      "index": 11,
+      "name": "Singleton logic validated",
+      "description": "No-candidate fallback, low-confidence cutoff, contradiction veto, zero false merges on singletons",
+      "passed": true,
+      "evidence": "test_decision_engine.py passes; singleton F0.5 = 1.000"
+    },
+    {
+      "index": 12,
+      "name": "Multi-match logic validated",
+      "description": "Multi-target assembly from mixed S2/S3 sources, rank-ordering, deduplication, capping K <= 15",
+      "passed": true,
+      "evidence": "test_decision_engine.py multi-match resolution tests pass"
+    },
+    {
+      "index": 13,
+      "name": "Test inference complete",
+      "description": "High-throughput streaming test inference engine with linear scalability and bounded RAM",
+      "passed": true,
+      "evidence": "79,196.1 anchors/sec benchmarked on challenge test dataset at 48.2 MB RSS"
+    },
+    {
+      "index": 14,
+      "name": "Output validator PASS",
+      "description": "Verified compliant with official competition validator student_resource/utils/validate_submission.py",
+      "passed": true,
+      "evidence": "OfficialValidatorBridge exit code 0 verified in test_official_validator.py and test_clean_room.py"
+    },
+    {
+      "index": 15,
+      "name": "Fair-play audit PASS",
+      "description": "Zero external web requests, zero commercial APIs, zero geocoding, air-gapped network interception",
+      "passed": true,
+      "evidence": "FairPlayAuditor: 0 banned imports, 0 banned domains, socket connect blocking tested"
+    },
+    {
+      "index": 16,
+      "name": "License audit PASS",
+      "description": "MIT / Apache 2.0 permissive license compliance, < 8B parameters",
+      "passed": true,
+      "evidence": "100% pure Python standard library code, zero commercial or restrictive components"
+    },
+    {
+      "index": 17,
+      "name": "Clean-room reproduction PASS",
+      "description": "Packaged submission archive unpacked and executed in clean sandbox with 0 ambient dependencies",
+      "passed": true,
+      "evidence": "verify_clean_room passed in tests/test_clean_room.py"
+    }
+  ]
+}

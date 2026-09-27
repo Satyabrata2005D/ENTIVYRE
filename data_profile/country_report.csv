@@ -1,0 +1,16 @@
+file,country,count,percentage
+train_source1.tsv,US,59890,59.89
+train_source1.tsv,India,40110,40.11
+train_source2.tsv,US,59936,59.94
+train_source2.tsv,India,40064,40.06
+train_source3.tsv,US,59529,59.53
+train_source3.tsv,India,40471,40.47
+test_source1.tsv,India,46598,46.6
+test_source1.tsv,US,38419,38.42
+test_source1.tsv,France,14983,14.98
+test_source2.tsv,India,47328,47.33
+test_source2.tsv,US,38169,38.17
+test_source2.tsv,France,14503,14.5
+test_source3.tsv,India,47307,47.31
+test_source3.tsv,US,38466,38.47
+test_source3.tsv,France,14227,14.23

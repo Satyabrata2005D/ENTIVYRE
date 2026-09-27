@@ -1,0 +1,12 @@
+metric,value
+total_source1_anchors,2206821
+anchors_with_matches,2083574
+true_singletons,123247
+singleton_ratio_pct,5.58%
+total_true_pairs,7638365
+mean_matches_per_anchor_overall,3.461
+mean_matches_per_matched_anchor,3.666
+max_matches_per_anchor,11
+total_source2_matches,3693619
+total_source3_matches,3944746
+ratio_s2_to_s3_matches,0.94

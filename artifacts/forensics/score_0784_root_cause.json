@@ -1,0 +1,34 @@
+{
+  "champion_id": "CHAMPION_784",
+  "public_score": 0.784,
+  "evaluation_sample_anchors": 5000,
+  "total_true_matches": 17250,
+  "error_decomposition": {
+    "blocking_miss": 1192,
+    "feature_miss": 2285,
+    "model_miss": 254,
+    "threshold_miss": 748,
+    "singleton_error": 145,
+    "multi_match_error": 0,
+    "false_merge": 474,
+    "other": 0
+  },
+  "percentages": {
+    "blocking_miss": 23.38,
+    "feature_miss": 44.82,
+    "model_miss": 4.98,
+    "threshold_miss": 14.67,
+    "singleton_error": 2.84,
+    "multi_match_error": 0.0,
+    "false_merge": 9.3,
+    "other": 0.0
+  },
+  "total_error_events": 5098,
+  "scoring_hits": 12771,
+  "candidate_recall": 0.9309,
+  "veto_reasons_breakdown": {
+    "low_name_similarity": 1440,
+    "building_conflict": 783,
+    "ok": 62
+  }
+}

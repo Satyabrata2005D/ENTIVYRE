@@ -1,0 +1,16 @@
+{
+  "phase": "38_submission_packaging",
+  "status": "COMPLETED",
+  "packaging_script": "scripts/package_submission.py",
+  "target_archive_format": "<team_name>_submission.zip",
+  "tests_passed": 152,
+  "archive_contract_verified": {
+    "output_matching_results_tsv": true,
+    "output_candidate_pairs_tsv": true,
+    "code_business_entity_resolution_src": true,
+    "code_business_entity_resolution_readme": true,
+    "code_business_entity_resolution_requirements": true,
+    "documentation_template_md": true,
+    "pycache_and_pyc_excluded": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "phase": "24_tree_boosting_experiments",
+  "status": "COMPLETED",
+  "model_module": "ber.models.tree_ensemble",
+  "classes": [
+    "GradientBoostedDecisionStumps",
+    "DecisionStump"
+  ],
+  "tests_passed": 125,
+  "boosting_spec": {
+    "loss": "Logistic log-loss",
+    "leaf_update": "Second-order Newton-Raphson with L2 regularization",
+    "shrinkage": 0.10,
+    "feature_splits": "Continuous threshold midpoints across all 33 features",
+    "output": "Calibrated probability P(match|x)"
+  }
+}

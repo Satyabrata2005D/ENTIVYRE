@@ -1,0 +1,22 @@
+{
+  "phase": "28_error_analysis",
+  "status": "COMPLETED",
+  "evaluation_module": "ber.evaluation.error_analyzer",
+  "classes": [
+    "ErrorAnalyzer",
+    "ErrorAnalysisReport",
+    "ErrorRecord"
+  ],
+  "tests_passed": 130,
+  "taxonomies_covered": [
+    "BLOCKING_MISS",
+    "MODEL_FALSE_NEGATIVE",
+    "MODEL_FALSE_POSITIVE",
+    "SINGLETON_FALSE_MERGE",
+    "SINGLETON_FALSE_DISMISSAL"
+  ],
+  "export_formats": [
+    "JSON",
+    "Markdown"
+  ]
+}

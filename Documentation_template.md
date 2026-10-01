@@ -1,8 +1,8 @@
 # ML Challenge 2026: Business Entity Resolution Solution Template
 
-**Team Name:** ENTIVYRE  
+**Team Name:** UNPAID ENGINEERS  
 **Team Members:** Satyabrata Das  
-**Submission Date:** 2026-09-25  
+**Submission Date:** 2026-10-02  
 
 ---
 

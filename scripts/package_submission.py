@@ -29,7 +29,7 @@ from ber.validation.official_validator import OfficialValidatorBridge
 
 
 def package_submission(
-    team_name: str = "ENTIVYRE",
+    team_name: str = "UNPAID_ENGINEERS",
     output_dir: Path = Path("output"),
     code_dir: Path = Path("code/business_entity_resolution"),
     doc_path: Path = Path("Documentation_template.md"),
@@ -69,7 +69,12 @@ def package_submission(
                 arc_name = Path("code") / rel_path
                 zf.write(file_path, arcname=str(arc_name))
 
-        # 3. Documentation_template.md
+        # 3. requirements.txt at root (matches official screenshot specification)
+        req_path = Path("requirements.txt")
+        if req_path.is_file():
+            zf.write(req_path, arcname="requirements.txt")
+
+        # 4. Documentation_template.md
         zf.write(doc_path, arcname="Documentation_template.md")
 
     print(f"Package created successfully: {zip_path} ({zip_path.stat().st_size / (1024 * 1024):.2f} MB)")
@@ -78,7 +83,7 @@ def package_submission(
 
 def main():
     parser = argparse.ArgumentParser(description="Package ENTIVYRE official challenge submission ZIP.")
-    parser.add_argument("--team-name", default="ENTIVYRE", help="Team name prefix for ZIP file")
+    parser.add_argument("--team-name", default="UNPAID_ENGINEERS", help="Team name prefix for ZIP file")
     parser.add_argument("--output-dir", default="output", help="Directory containing TSV files")
     parser.add_argument("--dest", default="submission", help="Target destination directory for ZIP")
 

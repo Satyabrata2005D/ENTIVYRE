@@ -1,5 +1,5 @@
 # Business Entity Resolution Engine (`ber`)
-**ENTIVYRE — Official Submission Codebase for Amazon ML Challenge 2026**
+**UNPAID ENGINEERS — Official Submission Codebase for Amazon ML Challenge 2026**
 
 ---
 

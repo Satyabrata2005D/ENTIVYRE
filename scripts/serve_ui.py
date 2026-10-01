@@ -248,15 +248,18 @@ class HardenedSecurityHandler(http.server.SimpleHTTPRequestHandler):
 
     def send_submission_download(self, head_only=False):
         """Stream the submission zip file for direct browser download."""
-        zip_path = os.path.join(SUBMISSION_DIR, 'ENTIVYRE_submission.zip')
+        zip_path = os.path.join(SUBMISSION_DIR, 'UNPAID_ENGINEERS_submission.zip')
+        if not os.path.exists(zip_path):
+            zip_path = os.path.join(SUBMISSION_DIR, 'ENTIVYRE_submission.zip')
         if not os.path.exists(zip_path):
             self.send_error(404, "Submission archive not found")
             return
 
         file_size = os.path.getsize(zip_path)
+        filename = os.path.basename(zip_path)
         self.send_response(200)
         self.send_header('Content-Type', 'application/zip')
-        self.send_header('Content-Disposition', 'attachment; filename="ENTIVYRE_submission.zip"')
+        self.send_header('Content-Disposition', f'attachment; filename="{filename}"')
         self.send_header('Content-Length', str(file_size))
         self.send_header('Cache-Control', 'no-store, max-age=0')
         self.end_headers()

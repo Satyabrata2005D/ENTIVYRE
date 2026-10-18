@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ENTIVYRE</title>
   <meta name="description" content="ENTIVYRE — Deterministic, air-gapped business entity resolution and golden-record synthesis platform for the Amazon ML Challenge 2026.">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=20261019-5col-filter">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A0D14'/><rect x='8' y='9' width='16' height='2' rx='1' fill='%23FFFFFF'/><rect x='8' y='15' width='16' height='2' rx='1' fill='%23FFFFFF'/><circle cx='22' cy='16' r='4' fill='%23FF5B4D'/><rect x='8' y='21' width='16' height='2' rx='1' fill='%23FFFFFF'/></svg>">
 </head>
 <body>
@@ -621,41 +621,206 @@
           </div>
         </div>
 
-        <!-- Corpus Explorer: real, paginated access to the local 1.73M Source 1 records -->
+        <!-- Corpus Explorer: Structured Box Architecture with Instant Fast Navigation & Multi-Field Search -->
         <section class="corpus-explorer" aria-labelledby="corpusExplorerTitle">
           <div class="corpus-explorer-head">
             <div>
-              <div class="section-eyebrow">LOCAL DATA EXPLORER / READ-ONLY</div>
-              <h2 id="corpusExplorerTitle">Full corpus visibility, built for 1.73M anchors</h2>
+              <div class="section-eyebrow">LOCAL DATA EXPLORER / 17 TO 70 LAKHS ENTERPRISE CORPUS</div>
+              <h2 id="corpusExplorerTitle">Enterprise Entity Corpus Browser &amp; Inspector</h2>
               <p id="corpusExplorerSummary">Loading local dataset inventory…</p>
             </div>
-            <button class="btn-outline corpus-3d-btn" type="button" onclick="openVector3DModal('S1-00001')">Open 3D Corpus Map ↗</button>
+            <div class="corpus-head-actions">
+              <!-- View mode toggle: Boxed Table vs Cards Grid -->
+              <div class="view-mode-toggle" role="group" aria-label="View Mode">
+                <button class="view-mode-btn active" id="btnViewTable" type="button" title="Structured Box Table View">
+                  <span>▦</span> Boxed Table
+                </button>
+                <button class="view-mode-btn" id="btnViewCards" type="button" title="Entity Card Boxes View">
+                  <span>⊞</span> Entity Cards
+                </button>
+              </div>
+              <button class="btn-outline corpus-3d-btn" type="button" onclick="openVector3DModal('S1-00001')">Open 3D Corpus Map ↗</button>
+            </div>
           </div>
+
+          <!-- Dataset stats pills (Source 1: 17.3 Lakhs, Source 2: 48.9 Lakhs, Source 3: 50.8 Lakhs) -->
           <div class="corpus-source-stats" id="corpusSourceStats" aria-live="polite"></div>
-          <div class="corpus-controls">
-            <label>Source
-              <select id="corpusSourceSelect">
-                <option value="source1">Source 1 — anchors</option>
-                <option value="source2">Source 2 — targets</option>
-                <option value="source3">Source 3 — targets</option>
-              </select>
-            </label>
-            <label class="corpus-search-label">Search local records
-              <input id="corpusSearchInput" type="search" placeholder="Business name, ID, country, or address" autocomplete="off">
-            </label>
-            <button class="btn-primary" id="corpusSearchBtn" type="button">Search</button>
+
+          <!-- Structured 5-Column Search & Precision Filter Console -->
+          <div class="corpus-filter-panel">
+            <div class="corpus-panel-topbar">
+              <div class="corpus-stream-select-wrap">
+                <label for="corpusSourceSelect">STREAM SOURCE</label>
+                <select id="corpusSourceSelect" class="form-select form-select-stream">
+                  <option value="source1" selected>Source 1 (Anchors — 17.3 Lakhs)</option>
+                  <option value="source2">Source 2 (Targets — 48.9 Lakhs)</option>
+                  <option value="source3">Source 3 (Targets — 50.8 Lakhs)</option>
+                </select>
+              </div>
+
+              <div class="corpus-panel-headline">
+                <span class="filter-headline-tag">PRECISION 5-COLUMN SEARCH &amp; FILTER</span>
+                <span class="filter-headline-sub">Filter by Number (#), Entity ID, Business Name, Address, or Country</span>
+              </div>
+
+              <div class="corpus-filter-actions">
+                <button class="btn-primary corpus-action-btn" id="corpusSearchBtn" type="button">
+                  <span>🔍</span> Filter Records
+                </button>
+                <button class="btn-outline corpus-action-btn" id="corpusResetBtn" type="button">
+                  <span>↺</span> Reset All
+                </button>
+              </div>
+            </div>
+
+            <!-- 5 Dedicated Column Filter Boxes Matching Table Layout -->
+            <div class="corpus-5col-filter-grid">
+              <!-- Box 1: Number (#) -->
+              <div class="col-filter-box">
+                <label for="filterNumber">
+                  <span class="col-filter-idx">1</span>
+                  <span class="col-filter-icon">🔢</span>
+                  <span>Number (#)</span>
+                </label>
+                <div class="col-input-wrap">
+                  <input id="filterNumber" type="text" placeholder="e.g. 1, 2, #2, 1-10" autocomplete="off">
+                  <button class="col-clear-btn" data-target="filterNumber" type="button" title="Clear">✕</button>
+                </div>
+              </div>
+
+              <!-- Box 2: Entity ID -->
+              <div class="col-filter-box">
+                <label for="filterEntityId">
+                  <span class="col-filter-idx">2</span>
+                  <span class="col-filter-icon">🆔</span>
+                  <span>Entity ID</span>
+                </label>
+                <div class="col-input-wrap">
+                  <input id="filterEntityId" type="text" placeholder="e.g. S1-714132312" autocomplete="off">
+                  <button class="col-clear-btn" data-target="filterEntityId" type="button" title="Clear">✕</button>
+                </div>
+              </div>
+
+              <!-- Box 3: Business Name -->
+              <div class="col-filter-box">
+                <label for="filterBusinessName">
+                  <span class="col-filter-idx">3</span>
+                  <span class="col-filter-icon">🏢</span>
+                  <span>Business Name</span>
+                </label>
+                <div class="col-input-wrap">
+                  <input id="filterBusinessName" type="text" placeholder="e.g. Vision Partners, Zephay" autocomplete="off">
+                  <button class="col-clear-btn" data-target="filterBusinessName" type="button" title="Clear">✕</button>
+                </div>
+              </div>
+
+              <!-- Box 4: Business Address -->
+              <div class="col-filter-box">
+                <label for="filterAddress">
+                  <span class="col-filter-idx">4</span>
+                  <span class="col-filter-icon">📍</span>
+                  <span>Business Address</span>
+                </label>
+                <div class="col-input-wrap">
+                  <input id="filterAddress" type="text" placeholder="e.g. Cotten Road, Iowa City" autocomplete="off">
+                  <button class="col-clear-btn" data-target="filterAddress" type="button" title="Clear">✕</button>
+                </div>
+              </div>
+
+              <!-- Box 5: Country -->
+              <div class="col-filter-box">
+                <label for="filterCountry">
+                  <span class="col-filter-idx">5</span>
+                  <span class="col-filter-icon">🌍</span>
+                  <span>Country</span>
+                </label>
+                <div class="col-input-wrap">
+                  <input id="filterCountry" type="text" placeholder="e.g. US, India, France" autocomplete="off">
+                  <button class="col-clear-btn" data-target="filterCountry" type="button" title="Clear">✕</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Country Pills Filter Row & Active Filters Bar -->
+            <div class="country-quick-filter-row">
+              <span class="filter-pills-label">Quick Country:</span>
+              <div class="country-pills-wrap" id="countryPillsContainer">
+                <button class="country-pill active" data-country="all" type="button">All Countries</button>
+                <button class="country-pill" data-country="US" type="button">🇺🇸 USA</button>
+                <button class="country-pill" data-country="India" type="button">🇮🇳 India</button>
+                <button class="country-pill" data-country="France" type="button">🇫🇷 France</button>
+                <button class="country-pill" data-country="Germany" type="button">🇩🇪 Germany</button>
+                <button class="country-pill" data-country="United Kingdom" type="button">🇬🇧 UK</button>
+              </div>
+
+              <!-- Active Filters Summary Tag -->
+              <div class="active-filters-summary" id="activeFiltersSummary" style="display:none;"></div>
+            </div>
           </div>
-          <div class="corpus-table-wrap">
-            <table class="corpus-table">
-              <thead><tr><th>Entity ID</th><th>Business name</th><th>Address</th><th>Country</th></tr></thead>
-              <tbody id="corpusTableBody"><tr><td colspan="4">Loading local records…</td></tr></tbody>
+
+          <!-- Fast-Travel Navigation Toolbar (Clean, without redundant jump-to-row box) -->
+          <div class="corpus-jump-toolbar">
+            <div class="page-size-selector">
+              <label for="corpusPageSize"><span>⚡ Display:</span></label>
+              <select id="corpusPageSize" class="form-select-sm">
+                <option value="25" selected>25 rows</option>
+                <option value="50">50 rows</option>
+                <option value="100">100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="500">500 rows</option>
+              </select>
+            </div>
+
+            <!-- Quick Nav Fast-Travel Buttons (First, -1000, Prev, Next, +1000, Last) -->
+            <div class="fast-travel-buttons">
+              <button class="nav-speed-btn" id="corpusFirstBtn" type="button" title="Jump to First Record (#1)">|&laquo; First (#1)</button>
+              <button class="nav-speed-btn" id="corpusJumpBack1000Btn" type="button" title="Skip back 1,000 records">&laquo; -1,000</button>
+              <button class="nav-speed-btn" id="corpusPrevBtn" type="button">&larr; Prev</button>
+              <div class="page-counter-badge">
+                <span>Page</span>
+                <input id="corpusPageInput" type="number" min="1" value="1" title="Type page number and press Enter">
+                <span id="corpusTotalPages">/ 69,302</span>
+              </div>
+              <button class="nav-speed-btn" id="corpusNextBtn" type="button">Next &rarr;</button>
+              <button class="nav-speed-btn" id="corpusJumpFwd1000Btn" type="button" title="Skip forward 1,000 records">+1,000 &raquo;</button>
+              <button class="nav-speed-btn" id="corpusLastBtn" type="button" title="Jump to Final Record">Last &raquo;| (#17.3L)</button>
+            </div>
+          </div>
+
+          <!-- Structured Box Table View -->
+          <div class="corpus-table-wrap" id="corpusTableWrap">
+            <table class="corpus-table" id="corpusTable">
+              <thead>
+                <tr>
+                  <th class="th-num"># No.</th>
+                  <th class="th-id">Entity ID</th>
+                  <th class="th-name">Business Name</th>
+                  <th class="th-address">Business Address</th>
+                  <th class="th-country">Country</th>
+                  <th class="th-actions">Action</th>
+                </tr>
+              </thead>
+              <tbody id="corpusTableBody">
+                <tr><td colspan="6">Loading local records…</td></tr>
+              </tbody>
             </table>
           </div>
+
+          <!-- Structured Card Boxes View (Grid Mode) -->
+          <div class="corpus-cards-wrap" id="corpusCardsWrap" style="display:none;">
+            <div class="corpus-cards-grid" id="corpusCardsGrid">
+              <!-- Dynamically populated entity card boxes -->
+            </div>
+          </div>
+
+          <!-- Bottom Footer Status & Info -->
           <div class="corpus-footer">
-            <span id="corpusPageStatus">Preparing stream…</span>
-            <div class="corpus-pagination">
-              <button class="btn-outline" id="corpusPrevBtn" type="button">← Previous</button>
-              <button class="btn-outline" id="corpusNextBtn" type="button">Next →</button>
+            <div class="corpus-status-indicator">
+              <span class="live-dot"></span>
+              <span id="corpusPageStatus">Preparing stream…</span>
+            </div>
+            <div class="corpus-quick-hint">
+              <span>💡 Tip: Jump directly to any of the 17+ Lakhs records by typing its number in "Jump to Row #" or click "Last &raquo;|".</span>
             </div>
           </div>
         </section>
@@ -2069,7 +2234,7 @@
     <span id="toastMsg">Running pipeline...</span>
   </div>
 
-  <script src="js/app.js?v=20261019-full-corpus"></script>
+  <script src="js/app.js?v=20261019-5col-filter"></script>
   <script src="js/vector_3d_graph.js?v=20261019-full-corpus"></script>
 </body>
 </html>

@@ -17,18 +17,96 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Local corpus explorer. Records are fetched from the read-only local server in
 // small pages so the 1.73M-record source remains usable in a normal browser.
+// Local corpus explorer with high-performance indexed jumping and box architecture.
+// Built to smoothly navigate datasets from 17 Lakhs (Source 1) up to 70+ Lakhs (Sources 2 & 3).
 function initCorpusExplorer() {
-  const source = document.getElementById('corpusSourceSelect');
-  const search = document.getElementById('corpusSearchInput');
-  const run = document.getElementById('corpusSearchBtn');
-  const previous = document.getElementById('corpusPrevBtn');
-  const next = document.getElementById('corpusNextBtn');
-  if (!source || !search || !run || !previous || !next) return;
+  const sourceSelect = document.getElementById('corpusSourceSelect');
+  const filterNumber = document.getElementById('filterNumber');
+  const filterEntityId = document.getElementById('filterEntityId');
+  const filterBusinessName = document.getElementById('filterBusinessName');
+  const filterAddress = document.getElementById('filterAddress');
+  const filterCountry = document.getElementById('filterCountry');
+  const searchBtn = document.getElementById('corpusSearchBtn');
+  const resetBtn = document.getElementById('corpusResetBtn');
+  const countryPillsContainer = document.getElementById('countryPillsContainer');
+  const activeFiltersSummary = document.getElementById('activeFiltersSummary');
+  
+  const pageSizeSelect = document.getElementById('corpusPageSize');
+  const firstBtn = document.getElementById('corpusFirstBtn');
+  const jumpBack1000Btn = document.getElementById('corpusJumpBack1000Btn');
+  const prevBtn = document.getElementById('corpusPrevBtn');
+  const pageInput = document.getElementById('corpusPageInput');
+  const totalPagesSpan = document.getElementById('corpusTotalPages');
+  const nextBtn = document.getElementById('corpusNextBtn');
+  const jumpFwd1000Btn = document.getElementById('corpusJumpFwd1000Btn');
+  const lastBtn = document.getElementById('corpusLastBtn');
+  
+  const tableWrap = document.getElementById('corpusTableWrap');
+  const cardsWrap = document.getElementById('corpusCardsWrap');
+  const tableBody = document.getElementById('corpusTableBody');
+  const cardsGrid = document.getElementById('corpusCardsGrid');
+  const pageStatus = document.getElementById('corpusPageStatus');
+  const btnViewTable = document.getElementById('btnViewTable');
+  const btnViewCards = document.getElementById('btnViewCards');
 
-  const explorer = { offset: 0, previousOffsets: [], nextOffset: null, query: '' };
+  if (!sourceSelect || !searchBtn || !prevBtn || !nextBtn || !tableBody) return;
+
+  const state = {
+    source: 'source1',
+    offset: 0,
+    limit: 25,
+    filters: {
+      number: '',
+      entity_id: '',
+      business_name: '',
+      business_address: '',
+      country: 'all'
+    },
+    totalRecords: 1732544,
+    matchedRecords: 1732544,
+    totalPages: 69302,
+    currentPage: 1,
+    viewMode: 'table'
+  };
+
   const escapeHtml = (value) => String(value || '').replace(/[&<>'"]/g, character => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
   }[character]));
+
+  function getCountryFlag(country) {
+    const c = String(country || '').trim().toLowerCase();
+    if (c === 'us' || c === 'usa' || c === 'united states') return '🇺🇸';
+    if (c === 'india' || c === 'in') return '🇮🇳';
+    if (c === 'france' || c === 'fr') return '🇫🇷';
+    if (c === 'germany' || c === 'de') return '🇩🇪';
+    if (c.includes('kingdom') || c === 'uk' || c === 'gb') return '🇬🇧';
+    if (c === 'canada' || c === 'ca') return '🇨🇦';
+    if (c === 'australia' || c === 'au') return '🇦🇺';
+    return '🌐';
+  }
+
+  function getCountryClass(country) {
+    const c = String(country || '').trim().toLowerCase();
+    if (c.includes('us') || c.includes('state')) return 'country-us';
+    if (c.includes('india')) return 'country-india';
+    if (c.includes('france')) return 'country-france';
+    if (c.includes('germany')) return 'country-germany';
+    return '';
+  }
+
+  window.showCopiedToast = function(id) {
+    let toast = document.getElementById('corpusToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'corpusToast';
+      toast.className = 'corpus-toast';
+      document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<span>📋 Copied:</span> <strong style="color:var(--primary); font-family:var(--font-mono);">${escapeHtml(id)}</strong>`;
+    toast.style.display = 'flex';
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 2000);
+  };
 
   async function loadSummary() {
     const summary = document.getElementById('corpusExplorerSummary');
@@ -37,66 +115,411 @@ function initCorpusExplorer() {
       const response = await fetch('/api/dataset/summary');
       if (!response.ok) throw new Error('Dataset summary unavailable');
       const data = await response.json();
-      summary.textContent = `${Number(data.browseable_anchor_records).toLocaleString()} Source 1 anchors are available for paginated search; ${Number(data.total_records).toLocaleString()} total local test records remain read-only.`;
-      stats.innerHTML = Object.entries(data.sources).map(([key, item]) => `
-        <div class="corpus-source-stat ${key === 'source1' ? 'active' : ''}">
-          <span>${escapeHtml(item.label)}</span><strong>${Number(item.records).toLocaleString()}</strong>
+      
+      const s1Lakhs = (Number(data.browseable_anchor_records) / 100000).toFixed(1);
+      const totalLakhs = (Number(data.total_records) / 100000).toFixed(1);
+      
+      summary.innerHTML = `<strong>${Number(data.browseable_anchor_records).toLocaleString()}</strong> Source 1 anchors (${s1Lakhs} Lakhs) ready with sub-millisecond jump; <strong>${Number(data.total_records).toLocaleString()}</strong> total records (${totalLakhs} Lakhs across S1, S2, S3).`;
+      
+      stats.innerHTML = Object.entries(data.sources).map(([key, item]) => {
+        const lakhs = (Number(item.records) / 100000).toFixed(1);
+        return `
+        <div class="corpus-source-stat ${key === state.source ? 'active' : ''}" data-source="${key}">
+          <span>${escapeHtml(item.label)} &bull; ${lakhs} Lakhs</span>
+          <strong>${Number(item.records).toLocaleString()}</strong>
           <small>${escapeHtml(item.file)}</small>
-        </div>`).join('');
+        </div>`;
+      }).join('');
+
+      stats.querySelectorAll('.corpus-source-stat').forEach(card => {
+        card.addEventListener('click', () => {
+          const s = card.getAttribute('data-source');
+          if (s && s !== state.source) {
+            state.source = s;
+            sourceSelect.value = s;
+            state.offset = 0;
+            loadRecords();
+          }
+        });
+      });
     } catch (error) {
-      summary.textContent = 'Dataset inventory is unavailable. Start the ENTIVYRE local server to browse records.';
+      summary.textContent = 'Dataset inventory unavailable. Please ensure local ENTIVYRE server is active.';
     }
   }
 
-  async function loadRecords(reset = false) {
-    if (reset) { explorer.offset = 0; explorer.previousOffsets = []; explorer.query = search.value.trim(); }
-    const body = document.getElementById('corpusTableBody');
-    const status = document.getElementById('corpusPageStatus');
-    body.innerHTML = '<tr><td colspan="4">Streaming records from local storage…</td></tr>';
-    status.textContent = 'Loading…';
-    previous.disabled = explorer.previousOffsets.length === 0;
-    next.disabled = true;
-    const params = new URLSearchParams({ source: source.value, offset: String(explorer.offset), limit: '25' });
-    if (explorer.query) params.set('q', explorer.query);
+  function updateActiveFilterChips() {
+    if (!activeFiltersSummary) return;
+    const chips = [];
+    if (state.filters.number) {
+      chips.push(`<span class="filter-chip">🔢 #${escapeHtml(state.filters.number)} <button type="button" data-clear="number" title="Remove filter">✕</button></span>`);
+    }
+    if (state.filters.entity_id) {
+      chips.push(`<span class="filter-chip">🆔 ${escapeHtml(state.filters.entity_id)} <button type="button" data-clear="entity_id" title="Remove filter">✕</button></span>`);
+    }
+    if (state.filters.business_name) {
+      chips.push(`<span class="filter-chip">🏢 ${escapeHtml(state.filters.business_name)} <button type="button" data-clear="business_name" title="Remove filter">✕</button></span>`);
+    }
+    if (state.filters.business_address) {
+      chips.push(`<span class="filter-chip">📍 ${escapeHtml(state.filters.business_address)} <button type="button" data-clear="business_address" title="Remove filter">✕</button></span>`);
+    }
+    if (state.filters.country && state.filters.country !== 'all') {
+      chips.push(`<span class="filter-chip">🌍 ${escapeHtml(state.filters.country)} <button type="button" data-clear="country" title="Remove filter">✕</button></span>`);
+    }
+
+    if (chips.length > 0) {
+      activeFiltersSummary.innerHTML = `<span style="font-size:10px; font-weight:700; color:var(--neutral-500); text-transform:uppercase;">Active:</span> ${chips.join('')}`;
+      activeFiltersSummary.style.display = 'flex';
+      activeFiltersSummary.querySelectorAll('button[data-clear]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-clear');
+          if (key === 'number' && filterNumber) { filterNumber.value = ''; state.filters.number = ''; }
+          if (key === 'entity_id' && filterEntityId) { filterEntityId.value = ''; state.filters.entity_id = ''; }
+          if (key === 'business_name' && filterBusinessName) { filterBusinessName.value = ''; state.filters.business_name = ''; }
+          if (key === 'business_address' && filterAddress) { filterAddress.value = ''; state.filters.business_address = ''; }
+          if (key === 'country' && filterCountry) {
+            filterCountry.value = '';
+            state.filters.country = 'all';
+            if (countryPillsContainer) {
+              countryPillsContainer.querySelectorAll('.country-pill').forEach(p => p.classList.toggle('active', p.getAttribute('data-country') === 'all'));
+            }
+          }
+          state.offset = 0;
+          updateClearButtons();
+          updateActiveFilterChips();
+          loadRecords();
+        });
+      });
+    } else {
+      activeFiltersSummary.innerHTML = '';
+      activeFiltersSummary.style.display = 'none';
+    }
+  }
+
+  function updateClearButtons() {
+    [
+      { input: filterNumber, id: 'filterNumber' },
+      { input: filterEntityId, id: 'filterEntityId' },
+      { input: filterBusinessName, id: 'filterBusinessName' },
+      { input: filterAddress, id: 'filterAddress' },
+      { input: filterCountry, id: 'filterCountry' }
+    ].forEach(({ input, id }) => {
+      if (!input) return;
+      const btn = document.querySelector(`.col-clear-btn[data-target="${id}"]`);
+      if (btn) btn.style.display = input.value.trim() ? 'block' : 'none';
+    });
+  }
+
+  async function loadRecords() {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--neutral-500);"><span class="shield-pulse-dot" style="display:inline-block; margin-right:8px;"></span> Streaming indexed records from local TSV store…</td></tr>';
+    if (cardsGrid) cardsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--neutral-500);">Loading records…</div>';
+    pageStatus.textContent = 'Fetching local records…';
+
+    const params = new URLSearchParams({
+      source: state.source,
+      offset: String(state.offset),
+      limit: String(state.limit)
+    });
+    if (state.filters.number) params.set('row_num', state.filters.number);
+    if (state.filters.entity_id) params.set('entity_id', state.filters.entity_id);
+    if (state.filters.business_name) params.set('business_name', state.filters.business_name);
+    if (state.filters.business_address) params.set('business_address', state.filters.business_address);
+    if (state.filters.country && state.filters.country !== 'all') params.set('country', state.filters.country);
+
     try {
       const response = await fetch(`/api/dataset/records?${params}`);
       if (!response.ok) throw new Error('Records unavailable');
       const data = await response.json();
-      body.innerHTML = data.records.length ? data.records.map(record => `<tr>
-        <td class="corpus-id">${escapeHtml(record.entity_id)}</td><td>${escapeHtml(record.business_name)}</td>
-        <td>${escapeHtml(record.business_address)}</td><td>${escapeHtml(record.country)}</td>
-      </tr>`).join('') : '<tr><td colspan="4">No matching local records found.</td></tr>';
+
+      state.totalRecords = data.total_records || state.totalRecords;
+      state.matchedRecords = data.matched_records || state.totalRecords;
+      state.totalPages = data.total_pages || 1;
+      state.currentPage = data.current_page || 1;
+      state.offset = data.offset || 0;
+
+      // Render Table Rows
+      if (data.records && data.records.length) {
+        tableBody.innerHTML = data.records.map((record, idx) => {
+          const rowNum = record.row_num || (data.offset + idx + 1);
+          return `<tr>
+            <td class="cell-num"><span class="box-num-pill">#${Number(rowNum).toLocaleString()}</span></td>
+            <td class="cell-id">
+              <span class="box-entity-badge" title="Click to copy Entity ID" onclick="navigator.clipboard.writeText('${escapeHtml(record.entity_id)}'); showCopiedToast('${escapeHtml(record.entity_id)}');">
+                ${escapeHtml(record.entity_id)}
+              </span>
+            </td>
+            <td>
+              <div class="business-name-box">
+                <span>🏢</span>
+                <strong>${escapeHtml(record.business_name)}</strong>
+              </div>
+            </td>
+            <td>
+              <div class="business-addr-box">
+                <span>📍</span>
+                <span>${escapeHtml(record.business_address)}</span>
+              </div>
+            </td>
+            <td class="cell-country">
+              <span class="country-pill-badge ${getCountryClass(record.country)}">
+                ${getCountryFlag(record.country)} ${escapeHtml(record.country)}
+              </span>
+            </td>
+            <td class="cell-actions">
+              <button class="btn-box-action" type="button" onclick="openVector3DModal('${escapeHtml(record.entity_id)}')" title="Locate entity in 3D Point Cloud">
+                3D ↗
+              </button>
+            </td>
+          </tr>`;
+        }).join('');
+
+        // Render Card Boxes
+        if (cardsGrid) {
+          cardsGrid.innerHTML = data.records.map((record, idx) => {
+            const rowNum = record.row_num || (data.offset + idx + 1);
+            return `
+            <div class="entity-card-box">
+              <div class="card-box-header">
+                <span class="box-num-pill">#${Number(rowNum).toLocaleString()}</span>
+                <span class="box-entity-badge" title="Click to copy Entity ID" onclick="navigator.clipboard.writeText('${escapeHtml(record.entity_id)}'); showCopiedToast('${escapeHtml(record.entity_id)}');">
+                  ${escapeHtml(record.entity_id)}
+                </span>
+              </div>
+              <div class="card-box-name">🏢 ${escapeHtml(record.business_name)}</div>
+              <div class="card-box-address">📍 ${escapeHtml(record.business_address)}</div>
+              <div class="card-box-footer">
+                <span class="country-pill-badge ${getCountryClass(record.country)}">
+                  ${getCountryFlag(record.country)} ${escapeHtml(record.country)}
+                </span>
+                <button class="btn-box-action" type="button" onclick="openVector3DModal('${escapeHtml(record.entity_id)}')">
+                  3D Map ↗
+                </button>
+              </div>
+            </div>`;
+          }).join('');
+        }
+      } else {
+        const noMatchMsg = `<tr><td colspan="6" style="text-align:center; padding:36px; color:var(--neutral-500);">
+          <div style="font-size:16px; font-weight:700; color:var(--neutral-800); margin-bottom:6px;">No matching records found</div>
+          <div>Try clearing one or more filter boxes, or click "Reset All".</div>
+        </td></tr>`;
+        tableBody.innerHTML = noMatchMsg;
+        if (cardsGrid) cardsGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:36px; color:var(--neutral-500);">No matching records found.</div>';
+      }
+
+      // Update Navigation & Status
       const start = data.records.length ? data.offset + 1 : 0;
       const end = data.offset + data.records.length;
-      status.textContent = explorer.query ? `Search results ${start.toLocaleString()}–${end.toLocaleString()} for “${explorer.query}”` : `Showing records ${start.toLocaleString()}–${end.toLocaleString()} (streamed, not preloaded)`;
-      explorer.nextOffset = data.next_offset;
-      previous.disabled = explorer.previousOffsets.length === 0;
-      next.disabled = data.next_offset === null;
+      const totalCount = data.matched_records || data.total_records;
+      const lakhsNotation = (totalCount / 100000).toFixed(1);
+
+      if (data.is_filtered) {
+        pageStatus.innerHTML = `Filtered Results: <strong>#${start.toLocaleString()}–#${end.toLocaleString()}</strong> of <strong>${totalCount.toLocaleString()}</strong> match${totalCount === 1 ? '' : 'es'} (${lakhsNotation} Lakhs)`;
+      } else {
+        pageStatus.innerHTML = `Displaying records: <strong>#${start.toLocaleString()}–#${end.toLocaleString()}</strong> of <strong>${totalCount.toLocaleString()}</strong> total (${lakhsNotation} Lakhs in ${state.source.toUpperCase()})`;
+      }
+
+      if (pageInput) pageInput.value = state.currentPage;
+      if (totalPagesSpan) totalPagesSpan.textContent = `/ ${Number(state.totalPages).toLocaleString()}`;
+
+      // Update button enabled/disabled states
+      const isFirst = state.offset === 0;
+      const isLast = data.next_offset === null || state.currentPage >= state.totalPages;
+      if (firstBtn) firstBtn.disabled = isFirst;
+      if (jumpBack1000Btn) jumpBack1000Btn.disabled = isFirst;
+      if (prevBtn) prevBtn.disabled = isFirst;
+      if (nextBtn) nextBtn.disabled = isLast;
+      if (jumpFwd1000Btn) jumpFwd1000Btn.disabled = isLast;
+      if (lastBtn) lastBtn.disabled = isLast;
+
+      // Update active state in source stats cards
+      document.querySelectorAll('.corpus-source-stat').forEach(card => {
+        card.classList.toggle('active', card.getAttribute('data-source') === state.source);
+      });
+
     } catch (error) {
-      body.innerHTML = '<tr><td colspan="4">Could not load records from the local API.</td></tr>';
-      status.textContent = 'Local data service unavailable.';
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--danger);">Could not connect to local streaming service. Ensure scripts/serve_ui.py is running.</td></tr>';
+      pageStatus.textContent = 'Local data service unavailable.';
     }
   }
 
-  source.addEventListener('change', () => loadRecords(true));
-  run.addEventListener('click', () => loadRecords(true));
-  search.addEventListener('keydown', event => { if (event.key === 'Enter') loadRecords(true); });
-  next.addEventListener('click', () => {
-    if (explorer.nextOffset === null) return;
-    explorer.previousOffsets.push(explorer.offset);
-    explorer.offset = explorer.nextOffset;
+  // --- Search & Filter Handlers ---
+  function executeFilter() {
+    state.filters.number = filterNumber ? filterNumber.value.trim() : '';
+    state.filters.entity_id = filterEntityId ? filterEntityId.value.trim() : '';
+    state.filters.business_name = filterBusinessName ? filterBusinessName.value.trim() : '';
+    state.filters.business_address = filterAddress ? filterAddress.value.trim() : '';
+    state.filters.country = filterCountry && filterCountry.value.trim() ? filterCountry.value.trim() : (state.filters.country || 'all');
+    state.offset = 0;
+    updateClearButtons();
+    updateActiveFilterChips();
     loadRecords();
+  }
+
+  searchBtn.addEventListener('click', executeFilter);
+
+  // Bind Enter key and input change on all 5 filter fields
+  [filterNumber, filterEntityId, filterBusinessName, filterAddress, filterCountry].forEach(input => {
+    if (!input) return;
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') executeFilter();
+    });
+    input.addEventListener('input', () => {
+      updateClearButtons();
+    });
   });
-  previous.addEventListener('click', () => {
-    const offset = explorer.previousOffsets.pop();
-    if (offset === undefined) return;
-    explorer.offset = offset;
+
+  // Clear buttons on individual filter inputs
+  document.querySelectorAll('.col-clear-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const targetInput = document.getElementById(targetId);
+      if (targetInput) {
+        targetInput.value = '';
+        btn.style.display = 'none';
+        if (targetId === 'filterNumber') state.filters.number = '';
+        if (targetId === 'filterEntityId') state.filters.entity_id = '';
+        if (targetId === 'filterBusinessName') state.filters.business_name = '';
+        if (targetId === 'filterAddress') state.filters.business_address = '';
+        if (targetId === 'filterCountry') {
+          state.filters.country = 'all';
+          if (countryPillsContainer) {
+            countryPillsContainer.querySelectorAll('.country-pill').forEach(p => p.classList.toggle('active', p.getAttribute('data-country') === 'all'));
+          }
+        }
+        state.offset = 0;
+        updateActiveFilterChips();
+        loadRecords();
+      }
+    });
+  });
+
+  // Reset All Button
+  resetBtn.addEventListener('click', () => {
+    if (filterNumber) filterNumber.value = '';
+    if (filterEntityId) filterEntityId.value = '';
+    if (filterBusinessName) filterBusinessName.value = '';
+    if (filterAddress) filterAddress.value = '';
+    if (filterCountry) filterCountry.value = '';
+    state.filters = {
+      number: '',
+      entity_id: '',
+      business_name: '',
+      business_address: '',
+      country: 'all'
+    };
+    state.offset = 0;
+    if (countryPillsContainer) {
+      countryPillsContainer.querySelectorAll('.country-pill').forEach(p => {
+        p.classList.toggle('active', p.getAttribute('data-country') === 'all');
+      });
+    }
+    updateClearButtons();
+    updateActiveFilterChips();
     loadRecords();
   });
 
+  // Quick Country Pills Handler
+  if (countryPillsContainer) {
+    countryPillsContainer.querySelectorAll('.country-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        countryPillsContainer.querySelectorAll('.country-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const c = pill.getAttribute('data-country') || 'all';
+        state.filters.country = c;
+        if (filterCountry) filterCountry.value = (c === 'all' ? '' : c);
+        state.offset = 0;
+        updateClearButtons();
+        updateActiveFilterChips();
+        loadRecords();
+      });
+    });
+  }
+
+  // Source selection dropdown
+  sourceSelect.addEventListener('change', () => {
+    state.source = sourceSelect.value;
+    state.offset = 0;
+    loadRecords();
+  });
+
+  // Page size dropdown
+  if (pageSizeSelect) {
+    pageSizeSelect.addEventListener('change', () => {
+      state.limit = parseInt(pageSizeSelect.value, 10) || 25;
+      state.offset = 0;
+      loadRecords();
+    });
+  }
+
+  // Direct Jump to Page Number
+  if (pageInput) {
+    pageInput.addEventListener('change', () => {
+      const page = parseInt(pageInput.value, 10);
+      if (!isNaN(page) && page >= 1) {
+        const targetPage = Math.min(page, state.totalPages);
+        state.offset = (targetPage - 1) * state.limit;
+        loadRecords();
+      }
+    });
+    pageInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') pageInput.blur();
+    });
+  }
+
+  // Navigation Fast-Travel Buttons
+  firstBtn.addEventListener('click', () => {
+    state.offset = 0;
+    loadRecords();
+  });
+
+  jumpBack1000Btn.addEventListener('click', () => {
+    state.offset = Math.max(0, state.offset - (state.limit * 40));
+    loadRecords();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    state.offset = Math.max(0, state.offset - state.limit);
+    loadRecords();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    state.offset = state.offset + state.limit;
+    loadRecords();
+  });
+
+  jumpFwd1000Btn.addEventListener('click', () => {
+    state.offset = Math.min(Math.max(0, state.totalRecords - state.limit), state.offset + (state.limit * 40));
+    loadRecords();
+  });
+
+  lastBtn.addEventListener('click', () => {
+    state.offset = Math.max(0, (state.totalPages - 1) * state.limit);
+    loadRecords();
+  });
+
+  // View Mode Switcher: Box Table vs Card Boxes Grid
+  if (btnViewTable && btnViewCards) {
+    btnViewTable.addEventListener('click', () => {
+      btnViewTable.classList.add('active');
+      btnViewCards.classList.remove('active');
+      if (tableWrap) tableWrap.style.display = 'block';
+      if (cardsWrap) cardsWrap.style.display = 'none';
+      state.viewMode = 'table';
+    });
+
+    btnViewCards.addEventListener('click', () => {
+      btnViewCards.classList.add('active');
+      btnViewTable.classList.remove('active');
+      if (tableWrap) tableWrap.style.display = 'none';
+      if (cardsWrap) cardsWrap.style.display = 'block';
+      state.viewMode = 'cards';
+    });
+  }
+
   loadSummary();
-  loadRecords(true);
+  loadRecords();
 }
+
 
 // View switching
 function switchView(targetViewId) {

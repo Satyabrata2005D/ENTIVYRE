@@ -36,6 +36,8 @@ DATASET_FILES = {
     'source3': 'test_source3.tsv',
 }
 DATASET_COUNTS = {}
+DATASET_CHECKPOINTS = {}
+DATASET_HEADERS = {}
 
 # --- Security State & Sliding-Window Rate Limiter ---
 MAX_REQUESTS_PER_MINUTE = 240
@@ -333,16 +335,32 @@ class HardenedSecurityHandler(http.server.SimpleHTTPRequestHandler):
         path = os.path.realpath(os.path.join(DATASET_DIR, filename))
         return path if path.startswith(DATASET_DIR + os.sep) else None
 
+    def _get_checkpoints(self, source, step=2500):
+        if source in DATASET_CHECKPOINTS and source in DATASET_HEADERS:
+            return DATASET_CHECKPOINTS[source], DATASET_HEADERS[source]
+        path = self._dataset_path(source)
+        if not path or not os.path.isfile(path):
+            return [], []
+        checkpoints = []
+        with open(path, 'rb') as handle:
+            header_line = handle.readline().decode('utf-8', errors='replace').strip()
+            headers = header_line.split('\t')
+            checkpoints.append(handle.tell())
+            line_idx = 0
+            for _ in handle:
+                line_idx += 1
+                if line_idx % step == 0:
+                    checkpoints.append(handle.tell())
+        DATASET_CHECKPOINTS[source] = checkpoints
+        DATASET_HEADERS[source] = headers
+        DATASET_COUNTS[source] = line_idx
+        return checkpoints, headers
+
     def _count_records(self, source):
         if source in DATASET_COUNTS:
             return DATASET_COUNTS[source]
-        path = self._dataset_path(source)
-        if not path or not os.path.isfile(path):
-            return 0
-        with open(path, 'r', encoding='utf-8', newline='') as handle:
-            count = max(0, sum(1 for _ in handle) - 1)
-        DATASET_COUNTS[source] = count
-        return count
+        checkpoints, _ = self._get_checkpoints(source)
+        return DATASET_COUNTS.get(source, 0)
 
     def _send_json(self, payload, head_only=False):
         body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
@@ -373,10 +391,21 @@ class HardenedSecurityHandler(http.server.SimpleHTTPRequestHandler):
     def send_dataset_records_response(self, head_only=False):
         query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         source = query.get('source', ['source1'])[0]
-        search = query.get('q', [''])[0].strip().lower()[:100]
+
+        # 5 distinct filter criteria
+        filter_num = query.get('row_num', query.get('num', ['']))[0].strip()
+        filter_id = query.get('entity_id', [''])[0].strip().lower()
+        filter_name = query.get('business_name', [''])[0].strip().lower()
+        filter_addr = query.get('business_address', [''])[0].strip().lower()
+        filter_country = query.get('country', ['all'])[0].strip().lower()
+
+        # Legacy or single query parameter support
+        search = query.get('q', [''])[0].strip()
+        field = query.get('field', ['all'])[0].strip().lower()
+
         try:
             offset = max(0, int(query.get('offset', ['0'])[0]))
-            limit = min(50, max(1, int(query.get('limit', ['25'])[0])))
+            limit = min(500, max(1, int(query.get('limit', ['25'])[0])))
         except ValueError:
             self.send_error(400, 'Invalid pagination parameters')
             return
@@ -386,34 +415,184 @@ class HardenedSecurityHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404, 'Dataset source not found')
             return
 
-        rows = []
-        # Without a search query, islice gives predictable, bounded streaming pagination.
-        with open(path, 'r', encoding='utf-8', newline='') as handle:
-            reader = csv.DictReader(handle, delimiter='\t')
-            if search:
-                matched = 0
-                for row in reader:
-                    haystack = ' '.join(row.values()).lower()
-                    if search not in haystack:
-                        continue
-                    if matched >= offset:
-                        rows.append(row)
-                    matched += 1
-                    if len(rows) == limit:
-                        break
-                next_offset = offset + len(rows) if len(rows) == limit else None
+        checkpoints, headers = self._get_checkpoints(source, step=2500)
+        total_records = self._count_records(source)
+
+        # Smart single query routing
+        if search:
+            if field == 'row':
+                filter_num = search
+            elif field == 'entity_id':
+                filter_id = search.lower()
+            elif field == 'business_name':
+                filter_name = search.lower()
+            elif field == 'business_address':
+                filter_addr = search.lower()
+            elif field == 'country':
+                filter_country = search.lower()
+            elif field == 'all':
+                clean_num = search.lstrip('#').strip()
+                if clean_num.isdigit() and int(clean_num) <= total_records and not filter_num:
+                    filter_num = clean_num
+                else:
+                    search_lower = search.lower()
             else:
-                rows = list(itertools.islice(reader, offset, offset + limit))
-                next_offset = offset + len(rows) if len(rows) == limit and offset + len(rows) < self._count_records(source) else None
+                search_lower = search.lower()
+        else:
+            search_lower = ''
+
+        # Parse target row numbers if filter_num is present
+        target_rows = []
+        if filter_num:
+            clean_parts = filter_num.replace('#', '').split(',')
+            for part in clean_parts:
+                part = part.strip()
+                if '-' in part:
+                    sub = part.split('-')
+                    if len(sub) == 2 and sub[0].strip().isdigit() and sub[1].strip().isdigit():
+                        start_r = max(1, int(sub[0].strip()))
+                        end_r = min(total_records, int(sub[1].strip()))
+                        if end_r >= start_r and (end_r - start_r) <= 500:
+                            target_rows.extend(range(start_r, end_r + 1))
+                elif part.isdigit():
+                    r = int(part)
+                    if 1 <= r <= total_records:
+                        target_rows.append(r)
+            target_rows = sorted(set(target_rows))
+
+        rows = []
+        is_filtered = bool(target_rows or filter_id or filter_name or filter_addr or (filter_country and filter_country != 'all') or search_lower)
+
+        if target_rows:
+            # Sub-millisecond direct row access via checkpoints
+            matched_rows = []
+            step = 2500
+            for r in target_rows:
+                cp_idx = min((r - 1) // step, len(checkpoints) - 1) if checkpoints else 0
+                skip = (r - 1) - (cp_idx * step) if checkpoints else (r - 1)
+                with open(path, 'r', encoding='utf-8', errors='replace', newline='') as handle:
+                    if checkpoints:
+                        handle.seek(checkpoints[cp_idx])
+                        reader = csv.DictReader(handle, fieldnames=headers, delimiter='\t')
+                    else:
+                        reader = csv.DictReader(handle, delimiter='\t')
+                    try:
+                        row_item = next(itertools.islice(reader, skip, skip + 1))
+                        row_dict = dict(row_item)
+                        row_dict['row_num'] = r
+
+                        # Check other filters if present
+                        e_id = (row_dict.get('entity_id') or '').strip().lower()
+                        b_name = (row_dict.get('business_name') or '').strip().lower()
+                        b_addr = (row_dict.get('business_address') or '').strip().lower()
+                        row_country = (row_dict.get('country') or '').strip().lower()
+
+                        if filter_id and filter_id not in e_id:
+                            continue
+                        if filter_name and filter_name not in b_name:
+                            continue
+                        if filter_addr and filter_addr not in b_addr:
+                            continue
+                        if filter_country and filter_country != 'all' and filter_country not in row_country:
+                            continue
+
+                        matched_rows.append(row_dict)
+                    except StopIteration:
+                        pass
+
+            effective_total = len(matched_rows)
+            rows = matched_rows[offset:offset + limit]
+            next_offset = offset + len(rows) if offset + len(rows) < effective_total else None
+            prev_offset = max(0, offset - limit) if offset > 0 else None
+
+        elif is_filtered:
+            # Field-based filter scan
+            matched_count = 0
+            with open(path, 'r', encoding='utf-8', errors='replace', newline='') as handle:
+                reader = csv.DictReader(handle, delimiter='\t')
+                line_idx = 0
+                for row in reader:
+                    line_idx += 1
+                    row_country = (row.get('country') or '').strip().lower()
+                    if filter_country and filter_country != 'all':
+                        if filter_country not in row_country:
+                            continue
+
+                    e_id = (row.get('entity_id') or '').strip().lower()
+                    b_name = (row.get('business_name') or '').strip().lower()
+                    b_addr = (row.get('business_address') or '').strip().lower()
+
+                    if filter_id and filter_id not in e_id:
+                        continue
+                    if filter_name and filter_name not in b_name:
+                        continue
+                    if filter_addr and filter_addr not in b_addr:
+                        continue
+                    if search_lower:
+                        haystack = f"{line_idx} #{line_idx} {e_id} {b_name} {b_addr} {row_country}"
+                        if search_lower not in haystack:
+                            continue
+
+                    if matched_count >= offset and len(rows) < limit:
+                        row_copy = dict(row)
+                        row_copy['row_num'] = line_idx
+                        rows.append(row_copy)
+
+                    matched_count += 1
+                    if len(rows) == limit and matched_count > offset + limit + 200:
+                        break
+
+            next_offset = offset + len(rows) if len(rows) == limit and offset + len(rows) < matched_count else None
+            prev_offset = max(0, offset - limit) if offset > 0 else None
+            effective_total = matched_count
+        else:
+            # Unfiltered fast sequential page streaming
+            step = 2500
+            cp_idx = min(offset // step, len(checkpoints) - 1) if checkpoints else 0
+            remainder = offset - (cp_idx * step) if checkpoints else offset
+
+            with open(path, 'r', encoding='utf-8', errors='replace', newline='') as handle:
+                if checkpoints:
+                    handle.seek(checkpoints[cp_idx])
+                    reader = csv.DictReader(handle, fieldnames=headers, delimiter='\t')
+                else:
+                    reader = csv.DictReader(handle, delimiter='\t')
+
+                raw_rows = list(itertools.islice(reader, remainder, remainder + limit))
+                for i, r in enumerate(raw_rows):
+                    row_copy = dict(r)
+                    row_copy['row_num'] = offset + i + 1
+                    rows.append(row_copy)
+
+            next_offset = offset + len(rows) if len(rows) == limit and offset + len(rows) < total_records else None
+            prev_offset = max(0, offset - limit) if offset > 0 else None
+            effective_total = total_records
+
+        total_pages = max(1, (effective_total + limit - 1) // limit) if effective_total else 1
+        current_page = (offset // limit) + 1 if limit else 1
 
         self._send_json({
             'source': source,
             'offset': offset,
             'limit': limit,
+            'total_records': total_records,
+            'matched_records': effective_total if is_filtered else total_records,
+            'total_pages': total_pages,
+            'current_page': current_page,
             'next_offset': next_offset,
+            'prev_offset': prev_offset,
             'records': rows,
-            'search': search,
+            'filters': {
+                'row_num': filter_num,
+                'entity_id': filter_id,
+                'business_name': filter_name,
+                'business_address': filter_addr,
+                'country': filter_country,
+                'q': search
+            },
+            'is_filtered': is_filtered
         }, head_only)
+
 
     def send_source1_point_cloud(self, head_only=False):
         """Stream one GPU vertex per real Source 1 record (four float32 values)."""

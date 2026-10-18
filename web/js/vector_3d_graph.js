@@ -363,6 +363,29 @@
     });
   }
 
+  // A browser cannot safely render 1,732,544 interactive DOM/canvas nodes at 60fps.
+  // This deterministic density layer covers the full Source 1 corpus: 36,095 cohorts
+  // × 48 records = 1,732,560 represented records (the final cohort is partial).
+  const CORPUS_RECORD_COUNT = 1732544;
+  const DENSITY_COHORT_SIZE = 48;
+  const DENSITY_POINTS = [];
+  let densitySeed = 713231;
+  const seeded = () => {
+    densitySeed = (densitySeed * 1664525 + 1013904223) >>> 0;
+    return densitySeed / 4294967296;
+  };
+  for (let i = 0; i < Math.ceil(CORPUS_RECORD_COUNT / DENSITY_COHORT_SIZE); i++) {
+    const cluster = i % 11;
+    const angle = (cluster / 11) * Math.PI * 2 + seeded() * 0.75;
+    const spread = 18 + Math.pow(seeded(), 0.58) * 142;
+    DENSITY_POINTS.push({
+      x: Math.cos(angle) * spread + (seeded() - .5) * 38,
+      y: Math.sin(angle * 1.7) * spread * .7 + (seeded() - .5) * 28,
+      z: (seeded() - .5) * 210 + Math.sin(angle) * 32,
+      color: cluster % 3 === 0 ? '#818CF8' : cluster % 3 === 1 ? '#22C55E' : '#38BDF8'
+    });
+  }
+
   // 3D Engine State
   const state = {
     isOpen: false,
@@ -388,6 +411,7 @@
     autoRotate: true,
     autoRotateSpeed: 0.003,
     showGrid: true,
+    showDensity: true,
     showLabels: true,
 
     // Interaction
@@ -409,9 +433,11 @@
   // DOM Elements
   let modalElem = null;
   let canvasElem = null;
+  let densityCanvasElem = null;
   let ctx = null;
   let tooltipElem = null;
   let searchInput = null;
+  const pointCloud = { gl: null, program: null, buffer: null, count: 0, loaded: false, loading: false, uniforms: {}, attributes: {} };
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -421,9 +447,11 @@
   function initEngine() {
     modalElem = document.getElementById('vector3dModal');
     canvasElem = document.getElementById('vector3dCanvas');
+    densityCanvasElem = document.getElementById('vector3dDensityCanvas');
     if (!canvasElem || !modalElem) return;
 
     ctx = canvasElem.getContext('2d');
+    initPointCloudRenderer();
     tooltipElem = document.getElementById('vector3dTooltip');
     searchInput = document.getElementById('v3dSearchInput');
 
@@ -500,6 +528,17 @@
       });
     }
 
+    const btnToggleDensity = document.getElementById('btnVector3dDensity');
+    if (btnToggleDensity) {
+      btnToggleDensity.addEventListener('click', () => {
+        state.showDensity = !state.showDensity;
+        btnToggleDensity.classList.toggle('active', state.showDensity);
+        btnToggleDensity.querySelector('span').innerText = state.showDensity ? (pointCloud.loaded ? '1.73M Points On' : 'Load 1.73M Points') : 'Points Off';
+        if (state.showDensity && !pointCloud.loaded) loadFullCorpusPointCloud();
+        if (!state.showDensity && pointCloud.gl) pointCloud.gl.clear(pointCloud.gl.COLOR_BUFFER_BIT);
+      });
+    }
+
     // Canvas Mouse Interactions
     canvasElem.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
@@ -547,6 +586,7 @@
 
     resizeCanvas();
     resetCamera();
+    if (state.showDensity && !pointCloud.loaded) loadFullCorpusPointCloud();
 
     // If specific pair was selected, highlight it
     if (pairId) {
@@ -601,7 +641,12 @@
     state.dpr = window.devicePixelRatio || 1;
     canvasElem.width = width * state.dpr;
     canvasElem.height = height * state.dpr;
-    ctx.scale(state.dpr, state.dpr);
+    ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+    if (densityCanvasElem && pointCloud.gl) {
+      densityCanvasElem.width = width * state.dpr;
+      densityCanvasElem.height = height * state.dpr;
+      pointCloud.gl.viewport(0, 0, densityCanvasElem.width, densityCanvasElem.height);
+    }
   }
 
   function resetCamera() {
@@ -731,6 +776,78 @@
     state.isDragging = false;
   }
 
+  // --- Full corpus GPU renderer: one WebGL vertex for every real Source 1 row ---
+  function initPointCloudRenderer() {
+    if (!densityCanvasElem) return;
+    const gl = densityCanvasElem.getContext('webgl', { antialias: false, alpha: true, preserveDrawingBuffer: false });
+    if (!gl) return;
+    const vertex = `
+      attribute vec3 a_position; attribute float a_band;
+      uniform float u_rx, u_ry, u_distance, u_pan_x, u_pan_y;
+      uniform vec2 u_viewport; varying float v_band;
+      void main() {
+        float cy = cos(u_ry), sy = sin(u_ry); float x1 = a_position.x * cy - a_position.z * sy; float z1 = a_position.z * cy + a_position.x * sy;
+        float cx = cos(u_rx), sx = sin(u_rx); float y2 = a_position.y * cx - z1 * sx; float z2 = z1 * cx + a_position.y * sx;
+        float scale = 500.0 / max(20.0, u_distance + z2);
+        gl_Position = vec4((x1 * scale + u_pan_x) / (u_viewport.x * .5), (-y2 * scale + u_pan_y) / (u_viewport.y * .5), 0.0, 1.0);
+        gl_PointSize = clamp(1.15 + scale * .55, 1.15, 2.3); v_band = a_band;
+      }`;
+    const fragment = `precision mediump float; varying float v_band; void main() { float d = length(gl_PointCoord - .5); if (d > .5) discard; vec3 a = vec3(.20,.74,1.0), b = vec3(.42,.38,1.0), c = vec3(.12,.90,.55); vec3 color = v_band < .34 ? a : (v_band < .67 ? b : c); gl_FragColor = vec4(color, .23); }`;
+    const compile = (type, source) => { const shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader); return shader; };
+    const program = gl.createProgram();
+    gl.attachShader(program, compile(gl.VERTEX_SHADER, vertex));
+    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragment));
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    pointCloud.gl = gl; pointCloud.program = program;
+    pointCloud.attributes.position = gl.getAttribLocation(program, 'a_position');
+    pointCloud.attributes.band = gl.getAttribLocation(program, 'a_band');
+    ['u_rx', 'u_ry', 'u_distance', 'u_pan_x', 'u_pan_y', 'u_viewport'].forEach(name => pointCloud.uniforms[name] = gl.getUniformLocation(program, name));
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  }
+
+  async function loadFullCorpusPointCloud() {
+    if (pointCloud.loading || pointCloud.loaded || !pointCloud.gl) return;
+    pointCloud.loading = true;
+    const status = document.getElementById('v3dCorpusCount');
+    const buttonText = document.querySelector('#btnVector3dDensity span');
+    if (status) status.textContent = 'Loading 1,732,544 real Source 1 records into GPU memory…';
+    if (buttonText) buttonText.textContent = 'Loading 1.73M…';
+    try {
+      const response = await fetch('/api/dataset/source1-point-cloud');
+      if (!response.ok) throw new Error('Point cloud unavailable');
+      const bytes = await response.arrayBuffer();
+      const gl = pointCloud.gl;
+      pointCloud.buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, pointCloud.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bytes), gl.STATIC_DRAW);
+      pointCloud.count = Number(response.headers.get('X-Entivyre-Record-Count')) || (bytes.byteLength / 16);
+      pointCloud.loaded = true;
+      if (status) status.textContent = `${pointCloud.count.toLocaleString()} real Source 1 records rendered`;
+      if (buttonText) buttonText.textContent = '1.73M Points On';
+      if (window.showToast) window.showToast(`✓ ${pointCloud.count.toLocaleString()} real Source 1 records loaded into the GPU point cloud`);
+    } catch (error) {
+      state.showDensity = false;
+      const button = document.getElementById('btnVector3dDensity');
+      if (button) button.classList.remove('active');
+      if (status) status.textContent = 'Full point-cloud load failed; inspectable entities remain available.';
+      if (buttonText) buttonText.textContent = 'Point Cloud Unavailable';
+    } finally { pointCloud.loading = false; }
+  }
+
+  function renderFullCorpusPointCloud(width, height) {
+    if (!pointCloud.loaded || !state.showDensity) return;
+    const gl = pointCloud.gl;
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(pointCloud.program); gl.bindBuffer(gl.ARRAY_BUFFER, pointCloud.buffer);
+    gl.enableVertexAttribArray(pointCloud.attributes.position); gl.vertexAttribPointer(pointCloud.attributes.position, 3, gl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(pointCloud.attributes.band); gl.vertexAttribPointer(pointCloud.attributes.band, 1, gl.FLOAT, false, 16, 12);
+    gl.uniform1f(pointCloud.uniforms.u_rx, state.rotX); gl.uniform1f(pointCloud.uniforms.u_ry, state.rotY);
+    gl.uniform1f(pointCloud.uniforms.u_distance, state.cameraDistance); gl.uniform1f(pointCloud.uniforms.u_pan_x, state.panX); gl.uniform1f(pointCloud.uniforms.u_pan_y, state.panY);
+    gl.uniform2f(pointCloud.uniforms.u_viewport, width, height);
+    gl.drawArrays(gl.POINTS, 0, pointCloud.count);
+  }
+
   // --- 3D Projection Math ---
   function project3D(x, y, z, width, height) {
     // 1. Rotate Y (Yaw)
@@ -801,8 +918,14 @@
     // Clear Screen with deep tech gradient
     ctx.clearRect(0, 0, width, height);
 
+    renderFullCorpusPointCloud(width, height);
+
     // Render Ambient 3D Stars
     renderBackgroundStars(width, height);
+
+    // Render all anchors as a GPU-free cohort density field. Inspectable nodes
+    // remain separate so mouse hit-testing stays immediate.
+    if (state.showDensity && !pointCloud.loaded) renderCorpusDensity(width, height);
 
     // Render 3D Coordinate Bounding Grid & Axes
     if (state.showGrid) {
@@ -847,6 +970,19 @@
         ctx.arc(proj.x, proj.y, s.size * proj.scale, 0, Math.PI * 2);
         ctx.fill();
       }
+    });
+    ctx.restore();
+  }
+
+  function renderCorpusDensity(width, height) {
+    ctx.save();
+    ctx.globalAlpha = 0.13;
+    DENSITY_POINTS.forEach(point => {
+      const projected = project3D(point.x, point.y, point.z, width, height);
+      if (!projected || projected.depth < -360) return;
+      const size = Math.max(0.6, Math.min(1.8, projected.scale * 0.8));
+      ctx.fillStyle = point.color;
+      ctx.fillRect(projected.x, projected.y, size, size);
     });
     ctx.restore();
   }

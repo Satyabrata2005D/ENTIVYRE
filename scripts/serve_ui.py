@@ -18,12 +18,24 @@ import sys
 import json
 import time
 import urllib.parse
+import csv
+import itertools
+import struct
+import zlib
 from collections import defaultdict
 
 PORT = 8080
+HOST = "127.0.0.1"  # Localhost only: never expose dataset browsing endpoints to the LAN.
 WEB_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'web'))
 SUBMISSION_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'submission'))
 REPORTS_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'artifacts', 'reports'))
+DATASET_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'student_resource', 'dataset', 'test'))
+DATASET_FILES = {
+    'source1': 'test_source1.tsv',
+    'source2': 'test_source2.tsv',
+    'source3': 'test_source3.tsv',
+}
+DATASET_COUNTS = {}
 
 # --- Security State & Sliding-Window Rate Limiter ---
 MAX_REQUESTS_PER_MINUTE = 240
@@ -164,6 +176,12 @@ class HardenedSecurityHandler(http.server.SimpleHTTPRequestHandler):
         clean_path = self.path.split('?')[0]
         if clean_path == '/api/stats':
             self.send_stats_response()
+        elif clean_path == '/api/dataset/summary':
+            self.send_dataset_summary_response()
+        elif clean_path == '/api/dataset/records':
+            self.send_dataset_records_response()
+        elif clean_path == '/api/dataset/source1-point-cloud':
+            self.send_source1_point_cloud()
         elif clean_path == '/api/audit-log':
             self.send_audit_log_response()
         elif clean_path == '/api/download/submission':
@@ -307,6 +325,131 @@ class HardenedSecurityHandler(http.server.SimpleHTTPRequestHandler):
         if not head_only:
             self.wfile.write(body)
 
+    def _dataset_path(self, source):
+        """Return a canonical, allow-listed dataset path."""
+        filename = DATASET_FILES.get(source)
+        if not filename:
+            return None
+        path = os.path.realpath(os.path.join(DATASET_DIR, filename))
+        return path if path.startswith(DATASET_DIR + os.sep) else None
+
+    def _count_records(self, source):
+        if source in DATASET_COUNTS:
+            return DATASET_COUNTS[source]
+        path = self._dataset_path(source)
+        if not path or not os.path.isfile(path):
+            return 0
+        with open(path, 'r', encoding='utf-8', newline='') as handle:
+            count = max(0, sum(1 for _ in handle) - 1)
+        DATASET_COUNTS[source] = count
+        return count
+
+    def _send_json(self, payload, head_only=False):
+        body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Content-Length', str(len(body)))
+        self.send_header('Cache-Control', 'no-store, max-age=0')
+        self.end_headers()
+        if not head_only:
+            self.wfile.write(body)
+
+    def send_dataset_summary_response(self, head_only=False):
+        sources = {
+            key: {
+                'label': f"Source {key[-1]}",
+                'records': self._count_records(key),
+                'file': DATASET_FILES[key],
+            }
+            for key in DATASET_FILES
+        }
+        self._send_json({
+            'sources': sources,
+            'total_records': sum(item['records'] for item in sources.values()),
+            'browseable_anchor_records': sources['source1']['records'],
+            'mode': 'local read-only streaming',
+        }, head_only)
+
+    def send_dataset_records_response(self, head_only=False):
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        source = query.get('source', ['source1'])[0]
+        search = query.get('q', [''])[0].strip().lower()[:100]
+        try:
+            offset = max(0, int(query.get('offset', ['0'])[0]))
+            limit = min(50, max(1, int(query.get('limit', ['25'])[0])))
+        except ValueError:
+            self.send_error(400, 'Invalid pagination parameters')
+            return
+
+        path = self._dataset_path(source)
+        if not path or not os.path.isfile(path):
+            self.send_error(404, 'Dataset source not found')
+            return
+
+        rows = []
+        # Without a search query, islice gives predictable, bounded streaming pagination.
+        with open(path, 'r', encoding='utf-8', newline='') as handle:
+            reader = csv.DictReader(handle, delimiter='\t')
+            if search:
+                matched = 0
+                for row in reader:
+                    haystack = ' '.join(row.values()).lower()
+                    if search not in haystack:
+                        continue
+                    if matched >= offset:
+                        rows.append(row)
+                    matched += 1
+                    if len(rows) == limit:
+                        break
+                next_offset = offset + len(rows) if len(rows) == limit else None
+            else:
+                rows = list(itertools.islice(reader, offset, offset + limit))
+                next_offset = offset + len(rows) if len(rows) == limit and offset + len(rows) < self._count_records(source) else None
+
+        self._send_json({
+            'source': source,
+            'offset': offset,
+            'limit': limit,
+            'next_offset': next_offset,
+            'records': rows,
+            'search': search,
+        }, head_only)
+
+    def send_source1_point_cloud(self, head_only=False):
+        """Stream one GPU vertex per real Source 1 record (four float32 values)."""
+        path = self._dataset_path('source1')
+        total = self._count_records('source1')
+        if not path or not os.path.isfile(path):
+            self.send_error(404, 'Source 1 dataset not found')
+            return
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/octet-stream')
+        self.send_header('Content-Length', str(total * 16))
+        self.send_header('X-Entivyre-Record-Count', str(total))
+        self.send_header('Cache-Control', 'private, max-age=3600')
+        self.end_headers()
+        if head_only:
+            return
+
+        packet = struct.Struct('<ffff')
+        buffer = bytearray()
+        with open(path, 'r', encoding='utf-8', newline='') as handle:
+            reader = csv.DictReader(handle, delimiter='\t')
+            for row in reader:
+                # Stable coordinates are derived from every actual row's fields;
+                # the browser receives exactly one vertex for every anchor record.
+                seed = zlib.crc32((row['entity_id'] + row['business_name'] + row['country']).encode('utf-8'))
+                x = ((seed & 0x3FF) / 1023.0 - 0.5) * 330.0
+                y = (((seed >> 10) & 0x3FF) / 1023.0 - 0.5) * 260.0
+                z = (((seed >> 20) & 0x3FF) / 1023.0 - 0.5) * 300.0
+                color_band = ((seed >> 30) & 0x03) / 3.0
+                buffer.extend(packet.pack(x, y, z, color_band))
+                if len(buffer) >= 1024 * 1024:
+                    self.wfile.write(buffer)
+                    buffer.clear()
+        if buffer:
+            self.wfile.write(buffer)
+
     def log_message(self, format, *args):
         """Structured security logger."""
         try:
@@ -327,12 +470,12 @@ def main():
     print(f"  ENTIVYRE — Enterprise Hardened Shield Server")
     print(f"{'='*70}")
     print(f"  Serving Directory: {WEB_DIR}")
-    print(f"  URL:               http://localhost:{PORT}")
+    print(f"  URL:               http://localhost:{PORT} (localhost only)")
     print(f"  Security Tier:     MIL-SPEC AIR-GAPPED / DEFENSE-IN-DEPTH")
     print(f"  Active Defenses:   CSP, Anti-Clickjacking, Anti-Sniff, Rate Limiting")
     print(f"{'='*70}\n")
 
-    with ReusableTCPServer(("", PORT), HardenedSecurityHandler) as httpd:
+    with ReusableTCPServer((HOST, PORT), HardenedSecurityHandler) as httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

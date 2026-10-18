@@ -11,8 +11,92 @@ document.addEventListener('DOMContentLoaded', () => {
   initAuditLogModal();
   initSecurityShieldModal();
   initPipelineRunner();
+  initCorpusExplorer();
   fetchLiveTelemetry();
 });
+
+// Local corpus explorer. Records are fetched from the read-only local server in
+// small pages so the 1.73M-record source remains usable in a normal browser.
+function initCorpusExplorer() {
+  const source = document.getElementById('corpusSourceSelect');
+  const search = document.getElementById('corpusSearchInput');
+  const run = document.getElementById('corpusSearchBtn');
+  const previous = document.getElementById('corpusPrevBtn');
+  const next = document.getElementById('corpusNextBtn');
+  if (!source || !search || !run || !previous || !next) return;
+
+  const explorer = { offset: 0, previousOffsets: [], nextOffset: null, query: '' };
+  const escapeHtml = (value) => String(value || '').replace(/[&<>'"]/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[character]));
+
+  async function loadSummary() {
+    const summary = document.getElementById('corpusExplorerSummary');
+    const stats = document.getElementById('corpusSourceStats');
+    try {
+      const response = await fetch('/api/dataset/summary');
+      if (!response.ok) throw new Error('Dataset summary unavailable');
+      const data = await response.json();
+      summary.textContent = `${Number(data.browseable_anchor_records).toLocaleString()} Source 1 anchors are available for paginated search; ${Number(data.total_records).toLocaleString()} total local test records remain read-only.`;
+      stats.innerHTML = Object.entries(data.sources).map(([key, item]) => `
+        <div class="corpus-source-stat ${key === 'source1' ? 'active' : ''}">
+          <span>${escapeHtml(item.label)}</span><strong>${Number(item.records).toLocaleString()}</strong>
+          <small>${escapeHtml(item.file)}</small>
+        </div>`).join('');
+    } catch (error) {
+      summary.textContent = 'Dataset inventory is unavailable. Start the ENTIVYRE local server to browse records.';
+    }
+  }
+
+  async function loadRecords(reset = false) {
+    if (reset) { explorer.offset = 0; explorer.previousOffsets = []; explorer.query = search.value.trim(); }
+    const body = document.getElementById('corpusTableBody');
+    const status = document.getElementById('corpusPageStatus');
+    body.innerHTML = '<tr><td colspan="4">Streaming records from local storage…</td></tr>';
+    status.textContent = 'Loading…';
+    previous.disabled = explorer.previousOffsets.length === 0;
+    next.disabled = true;
+    const params = new URLSearchParams({ source: source.value, offset: String(explorer.offset), limit: '25' });
+    if (explorer.query) params.set('q', explorer.query);
+    try {
+      const response = await fetch(`/api/dataset/records?${params}`);
+      if (!response.ok) throw new Error('Records unavailable');
+      const data = await response.json();
+      body.innerHTML = data.records.length ? data.records.map(record => `<tr>
+        <td class="corpus-id">${escapeHtml(record.entity_id)}</td><td>${escapeHtml(record.business_name)}</td>
+        <td>${escapeHtml(record.business_address)}</td><td>${escapeHtml(record.country)}</td>
+      </tr>`).join('') : '<tr><td colspan="4">No matching local records found.</td></tr>';
+      const start = data.records.length ? data.offset + 1 : 0;
+      const end = data.offset + data.records.length;
+      status.textContent = explorer.query ? `Search results ${start.toLocaleString()}–${end.toLocaleString()} for “${explorer.query}”` : `Showing records ${start.toLocaleString()}–${end.toLocaleString()} (streamed, not preloaded)`;
+      explorer.nextOffset = data.next_offset;
+      previous.disabled = explorer.previousOffsets.length === 0;
+      next.disabled = data.next_offset === null;
+    } catch (error) {
+      body.innerHTML = '<tr><td colspan="4">Could not load records from the local API.</td></tr>';
+      status.textContent = 'Local data service unavailable.';
+    }
+  }
+
+  source.addEventListener('change', () => loadRecords(true));
+  run.addEventListener('click', () => loadRecords(true));
+  search.addEventListener('keydown', event => { if (event.key === 'Enter') loadRecords(true); });
+  next.addEventListener('click', () => {
+    if (explorer.nextOffset === null) return;
+    explorer.previousOffsets.push(explorer.offset);
+    explorer.offset = explorer.nextOffset;
+    loadRecords();
+  });
+  previous.addEventListener('click', () => {
+    const offset = explorer.previousOffsets.pop();
+    if (offset === undefined) return;
+    explorer.offset = offset;
+    loadRecords();
+  });
+
+  loadSummary();
+  loadRecords(true);
+}
 
 // View switching
 function switchView(targetViewId) {
@@ -758,4 +842,3 @@ window.closeSecurityModal = function () {
     securityPollingInterval = null;
   }
 };
-

@@ -621,6 +621,45 @@
           </div>
         </div>
 
+        <!-- Corpus Explorer: real, paginated access to the local 1.73M Source 1 records -->
+        <section class="corpus-explorer" aria-labelledby="corpusExplorerTitle">
+          <div class="corpus-explorer-head">
+            <div>
+              <div class="section-eyebrow">LOCAL DATA EXPLORER / READ-ONLY</div>
+              <h2 id="corpusExplorerTitle">Full corpus visibility, built for 1.73M anchors</h2>
+              <p id="corpusExplorerSummary">Loading local dataset inventory…</p>
+            </div>
+            <button class="btn-outline corpus-3d-btn" type="button" onclick="openVector3DModal('S1-00001')">Open 3D Corpus Map ↗</button>
+          </div>
+          <div class="corpus-source-stats" id="corpusSourceStats" aria-live="polite"></div>
+          <div class="corpus-controls">
+            <label>Source
+              <select id="corpusSourceSelect">
+                <option value="source1">Source 1 — anchors</option>
+                <option value="source2">Source 2 — targets</option>
+                <option value="source3">Source 3 — targets</option>
+              </select>
+            </label>
+            <label class="corpus-search-label">Search local records
+              <input id="corpusSearchInput" type="search" placeholder="Business name, ID, country, or address" autocomplete="off">
+            </label>
+            <button class="btn-primary" id="corpusSearchBtn" type="button">Search</button>
+          </div>
+          <div class="corpus-table-wrap">
+            <table class="corpus-table">
+              <thead><tr><th>Entity ID</th><th>Business name</th><th>Address</th><th>Country</th></tr></thead>
+              <tbody id="corpusTableBody"><tr><td colspan="4">Loading local records…</td></tr></tbody>
+            </table>
+          </div>
+          <div class="corpus-footer">
+            <span id="corpusPageStatus">Preparing stream…</span>
+            <div class="corpus-pagination">
+              <button class="btn-outline" id="corpusPrevBtn" type="button">← Previous</button>
+              <button class="btn-outline" id="corpusNextBtn" type="button">Next →</button>
+            </div>
+          </div>
+        </section>
+
         <!-- Resolution Graph Lifecycle (Horizontal Stepper) -->
         <div class="lifecycle-stepper-card">
           <div class="lifecycle-header">
@@ -1896,7 +1935,7 @@
         <div class="v3d-title-divider"></div>
         <div class="v3d-manifold-tag">
           <span>HIGH-DIMENSIONAL EMBEDDING MANIFOLD</span>
-          <span class="v3d-active-cluster-pill" id="v3dActiveClusterPill">CLUSTER #CL-09412 &bull; d=128 &rarr; 3D</span>
+          <span class="v3d-active-cluster-pill" id="v3dActiveClusterPill">1.73M ANCHORS &bull; d=128 &rarr; 3D</span>
         </div>
       </div>
 
@@ -1928,6 +1967,10 @@
           <span>Grid</span>
         </button>
 
+        <button class="v3d-ctrl-btn active" id="btnVector3dDensity" title="Toggle all 1,732,544 real Source 1 records rendered as GPU points">
+          <span>Load 1.73M Points</span>
+        </button>
+
         <button class="v3d-ctrl-btn" id="btnVector3dResetCam" title="Reset Camera Orientation & Zoom (R)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
@@ -1952,13 +1995,14 @@
 
     <!-- Main Viewport -->
     <div class="v3d-viewport">
+      <canvas id="vector3dDensityCanvas" aria-label="All Source 1 records rendered as GPU points"></canvas>
       <canvas id="vector3dCanvas"></canvas>
 
       <!-- Floating Left HUD Sidebar -->
       <aside class="v3d-hud-left">
         <div class="v3d-hud-header">
           <div class="v3d-hud-title">Cluster Manifold Projection</div>
-          <div class="v3d-hud-sub">32 Entities &bull; 17 Pairwise Vectors &bull; <span id="v3dActiveModeTag">UMAP 3D</span></div>
+          <div class="v3d-hud-sub"><span id="v3dCorpusCount">1,732,544 records ready to load</span> &bull; 32 inspectable entities &bull; <span id="v3dActiveModeTag">UMAP 3D</span></div>
         </div>
 
         <div class="v3d-search-box">

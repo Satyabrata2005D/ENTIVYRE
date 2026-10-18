@@ -74,6 +74,32 @@ body {
   min-height: 100vh;
 }
 
+/* Scalable local corpus explorer */
+.corpus-explorer { margin: 22px 0; padding: 22px; background: var(--white); border: 1px solid var(--card-border); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); }
+.corpus-explorer-head { display: flex; gap: 20px; align-items: flex-start; justify-content: space-between; }
+.section-eyebrow { color: var(--secondary); font: 700 10px var(--font-mono); letter-spacing: .8px; }
+.corpus-explorer h2 { margin: 4px 0; font: 700 20px var(--font-headline); color: var(--neutral-900); }
+.corpus-explorer p { color: var(--neutral-500); font-size: 13px; max-width: 760px; }
+.corpus-3d-btn { white-space: nowrap; }
+.corpus-source-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.corpus-source-stat { padding: 12px 14px; border: 1px solid var(--neutral-200); border-radius: var(--radius-md); background: var(--neutral-50); }
+.corpus-source-stat.active { background: var(--secondary-light); border-color: var(--secondary-border); }
+.corpus-source-stat span, .corpus-source-stat small { display: block; color: var(--neutral-500); font-size: 11px; }
+.corpus-source-stat strong { display: block; margin: 2px 0; color: var(--neutral-900); font: 700 20px var(--font-headline); }
+.corpus-controls { display: flex; gap: 10px; align-items: end; padding: 14px 0; border-top: 1px solid var(--neutral-100); }
+.corpus-controls label { display: grid; gap: 5px; color: var(--neutral-600); font-size: 11px; font-weight: 700; }
+.corpus-controls select, .corpus-controls input { height: 36px; padding: 0 10px; border: 1px solid var(--neutral-300); border-radius: var(--radius-sm); color: var(--neutral-800); font: 13px var(--font-body); background: #fff; }
+.corpus-search-label { flex: 1; }
+.corpus-table-wrap { max-height: 382px; overflow: auto; border: 1px solid var(--neutral-200); border-radius: var(--radius-md); }
+.corpus-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.corpus-table th { position: sticky; top: 0; text-align: left; padding: 11px; background: var(--neutral-100); color: var(--neutral-500); font-size: 10px; letter-spacing: .5px; text-transform: uppercase; z-index: 1; }
+.corpus-table td { max-width: 360px; padding: 10px 11px; border-top: 1px solid var(--neutral-100); color: var(--neutral-700); vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.corpus-table .corpus-id { font-family: var(--font-mono); color: var(--secondary); font-weight: 700; }
+.corpus-footer { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding-top: 13px; color: var(--neutral-500); font-size: 12px; }
+.corpus-pagination { display: flex; gap: 8px; }
+.corpus-pagination .btn-outline:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 760px) { .corpus-explorer-head, .corpus-controls, .corpus-footer { align-items: stretch; flex-direction: column; } .corpus-source-stats { grid-template-columns: 1fr; } .corpus-table td { max-width: 180px; } }
+
 /* ==========================================================================
    TOP GLOBAL NAVIGATION BAR
    ========================================================================== */
@@ -3313,13 +3339,16 @@ body {
   overflow: hidden;
 }
 
-#vector3dCanvas {
+#vector3dCanvas, #vector3dDensityCanvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
 }
+
+#vector3dDensityCanvas { z-index: 0; pointer-events: none; }
+#vector3dCanvas { z-index: 1; }
 
 /* Floating Left HUD Sidebar */
 .v3d-hud-left {
